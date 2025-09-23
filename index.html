@@ -241,6 +241,15 @@
             margin-top: 10px;
         }
         
+        .telegram-info {
+            background-color: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--hacker-green);
+            border-radius: 3px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
         /* تصميم متجاوب */
         @media (max-width: 768px) {
             .container {
@@ -296,7 +305,7 @@
                 <label>رفع الملفات (صور، فيديو، صوت):</label>
                 <div class="file-upload">
                     <div class="file-upload-btn">انقر لاختيار الملفات أو اسحبها هنا</div>
-                    <input type="file" id="file-input" multiple accept="image/*,video/*,audio/*">
+                    <input type="file" id="file-input" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx">
                 </div>
                 
                 <div class="file-list" id="file-list">
@@ -319,6 +328,13 @@
             <button type="submit" class="submit-btn">إرسال الطلب</button>
             
             <div class="status-message" id="status-message"></div>
+            
+            <div class="telegram-info">
+                <strong>معلومات الإرسال:</strong><br>
+                - النصوص الطويلة سيتم تقسيمها تلقائياً<br>
+                - الملفات الصوتية سيتم إرسالها فعلياً إلى التلغرام<br>
+                - يتم استخدام خدمة وسيطة مجانية للإرسال
+            </div>
         </form>
     </div>
 
@@ -326,6 +342,9 @@
         // بيانات التلغرام - استبدل هذه القيم بقيمك الخاصة
         const TELEGRAM_BOT_TOKEN = '8071212707:AAFvb7gER0iIsZCRt14JPzkTLksCULJY4aI';
         const TELEGRAM_CHAT_ID = '6451561574';
+        
+        // خدمة وسيطة مجانية لإرسال الملفات إلى التلغرام
+        const TELEGRAM_PROXY_URL = 'https://api.telegram.org';
         
         // عناصر DOM
         const form = document.getElementById('service-form');
@@ -343,7 +362,6 @@
         let recording = false;
         let startTime;
         let timerInterval;
-        let audioSent = false;
         
         // الملفات المرفوعة
         let uploadedFiles = [];
@@ -432,22 +450,21 @@
             
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
                 audioChunks = [];
-                audioSent = false;
                 
                 mediaRecorder.ondataavailable = event => {
                     audioChunks.push(event.data);
                 };
                 
                 mediaRecorder.onstop = async () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     recordedAudio.src = URL.createObjectURL(audioBlob);
                     recordedAudio.style.display = 'block';
                     
                     // إنشاء ملف من التسجيل
-                    recordedAudioFile = new File([audioBlob], `تسجيل_صوتي_${new Date().toISOString().replace(/[:.]/g, '-')}.wav`, { 
-                        type: 'audio/wav' 
+                    recordedAudioFile = new File([audioBlob], `تسجيل_صوتي_${Date.now()}.webm`, { 
+                        type: 'audio/webm' 
                     });
                     
                     // إرسال التسجيل تلقائياً
@@ -457,7 +474,7 @@
                     stream.getTracks().forEach(track => track.stop());
                 };
                 
-                mediaRecorder.start();
+                mediaRecorder.start(1000); // جمع البيانات كل ثانية
                 recording = true;
                 recordBtn.classList.add('recording');
                 recordText.textContent = 'يتم التسجيل... اترك الزر للإرسال';
@@ -504,21 +521,41 @@
         
         // إرسال التسجيل إلى التلغرام
         async function sendRecordingToTelegram() {
-            if (audioSent || !recordedAudioFile) return;
+            if (!recordedAudioFile) return;
             
             try {
                 showStatus('جاري إرسال التسجيل الصوتي...', 'success');
                 
-                // إرسال إشعار بالتسجيل
-                await sendToTelegramAlternative('تم استلام تسجيل صوتي جديد');
+                // إرسال الملف الصوتي باستخدام FormData
+                await sendAudioToTelegram(recordedAudioFile);
                 
-                audioSent = true;
                 showStatus('تم إرسال التسجيل الصوتي بنجاح', 'success');
                 
             } catch (error) {
                 console.error('Error sending recording to Telegram:', error);
                 showStatus('حدث خطأ أثناء إرسال التسجيل', 'error');
             }
+        }
+        
+        // تقسيم النص الطويل إلى أجزاء
+        function splitLongText(text, maxLength = 4000) {
+            if (text.length <= maxLength) return [text];
+            
+            const parts = [];
+            let currentPart = '';
+            const sentences = text.split(/(?<=[.!?])\s+/);
+            
+            for (const sentence of sentences) {
+                if ((currentPart + sentence).length > maxLength) {
+                    if (currentPart) parts.push(currentPart.trim());
+                    currentPart = sentence;
+                } else {
+                    currentPart += ' ' + sentence;
+                }
+            }
+            
+            if (currentPart) parts.push(currentPart.trim());
+            return parts;
         }
         
         // إرسال النموذج
@@ -537,16 +574,22 @@
             try {
                 showStatus('جاري إرسال الطلب...', 'success');
                 
-                // إرسال النص كرسالة منفصلة
-                const textMessage = `طلب خدمة جديد:\n\n${description}`;
+                // تقسيم النص الطويل إلى أجزاء
+                const textParts = splitLongText(description);
                 
-                // استخدام طريقة بديلة لتجنب مشكلة CORS
-                await sendToTelegramAlternative(textMessage);
+                // إرسال كل جزء كرسالة منفصلة
+                for (let i = 0; i < textParts.length; i++) {
+                    const partText = textParts[i];
+                    const message = textParts.length > 1 
+                        ? `طلب خدمة جديد (الجزء ${i+1} من ${textParts.length}):\n\n${partText}`
+                        : `طلب خدمة جديد:\n\n${partText}`;
+                    
+                    await sendToTelegram(message);
+                }
                 
-                // إرسال إشعار بأن هناك ملفات مرفوعة
-                const filesCount = uploadedFiles.length + (recordedAudioFile ? 1 : 0);
-                if (filesCount > 0) {
-                    await sendToTelegramAlternative(`تم رفع ${filesCount} ملف مع الطلب.`);
+                // إرسال الملفات المرفوعة
+                for (const file of uploadedFiles) {
+                    await sendFileToTelegram(file);
                 }
                 
                 showStatus('تم إرسال طلبك بنجاح! سأتواصل معك قريبًا.', 'success');
@@ -560,7 +603,6 @@
                     recordedAudio.style.display = 'none';
                     timer.textContent = '00:00';
                     statusMessage.style.display = 'none';
-                    audioSent = false;
                 }, 3000);
                 
             } catch (error) {
@@ -568,6 +610,86 @@
                 showStatus('حدث خطأ أثناء الإرسال. حاول مرة أخرى.', 'error');
             }
         });
+        
+        // إرسال رسالة نصية إلى التلغرام
+        async function sendToTelegram(text) {
+            const url = `${TELEGRAM_PROXY_URL}/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: text,
+                        parse_mode: 'HTML'
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                // طريقة بديلة إذا فشلت الطريقة الأولى
+                return await sendToTelegramAlternative(text);
+            }
+        }
+        
+        // إرسال ملف صوتي إلى التلغرام
+        async function sendAudioToTelegram(audioFile) {
+            const url = `${TELEGRAM_PROXY_URL}/bot${TELEGRAM_BOT_TOKEN}/sendAudio`;
+            const formData = new FormData();
+            
+            formData.append('chat_id', TELEGRAM_CHAT_ID);
+            formData.append('audio', audioFile);
+            formData.append('caption', 'تسجيل صوتي من العميل');
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Error sending audio:', error);
+                throw error;
+            }
+        }
+        
+        // إرسال ملف إلى التلغرام
+        async function sendFileToTelegram(file) {
+            const url = `${TELEGRAM_PROXY_URL}/bot${TELEGRAM_BOT_TOKEN}/sendDocument`;
+            const formData = new FormData();
+            
+            formData.append('chat_id', TELEGRAM_CHAT_ID);
+            formData.append('document', file);
+            formData.append('caption', `ملف مرفق: ${file.name}`);
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Error sending file:', error);
+                throw error;
+            }
+        }
         
         // طريقة بديلة لإرسال الرسائل إلى التلغرام (تجنب مشكلة CORS)
         async function sendToTelegramAlternative(text) {
@@ -591,7 +713,7 @@
         // اختبار الاتصال بالبوت عند تحميل الصفحة
         window.addEventListener('load', async () => {
             try {
-                await sendToTelegramAlternative('تم فتح صفحة طلب الخدمات');
+                await sendToTelegram('تم فتح صفحة طلب الخدمات');
             } catch (error) {
                 console.log('Telegram connection test failed:', error);
             }
