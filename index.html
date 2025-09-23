@@ -3,38 +3,586 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صفحتي الأولى</title>
+    <title>طلب خدمة - خدماتي الحرة</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        :root {
+            --hacker-green: #00ff00;
+            --hacker-dark: #0a0a0a;
+            --hacker-gray: #1a1a1a;
+            --hacker-light: #2a2a2a;
+            --text-color: #f0f0f0;
+        }
+        
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-            text-align: center;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
         }
-        h1 {
-            color: #2c3e50;
-        }
-        p {
-            color: #34495e;
+        
+        body {
+            background-color: var(--hacker-dark);
+            color: var(--text-color);
             line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
         }
+        
         .container {
             max-width: 800px;
             margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: var(--hacker-gray);
+            border: 1px solid var(--hacker-green);
+            border-radius: 5px;
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--hacker-green);
+        }
+        
+        h1 {
+            color: var(--hacker-green);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        
+        .subtitle {
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--hacker-green);
+            font-weight: bold;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--hacker-light);
+            border: 1px solid #333;
+            border-radius: 3px;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--hacker-green);
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-upload-btn {
+            background-color: var(--hacker-light);
+            color: var(--hacker-green);
+            padding: 12px 20px;
+            border: 1px dashed var(--hacker-green);
+            border-radius: 3px;
+            cursor: pointer;
+            display: block;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .file-upload-btn:hover {
+            background-color: rgba(0, 255, 0, 0.1);
+        }
+        
+        .file-upload input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .audio-recorder {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .record-btn {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        
+        .record-btn:hover {
+            background-color: #f44336;
+        }
+        
+        .record-btn.recording {
+            background-color: var(--hacker-green);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 255, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
+        }
+        
+        .timer {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            color: var(--hacker-green);
+        }
+        
+        .submit-btn {
+            background-color: var(--hacker-green);
+            color: var(--hacker-dark);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            background-color: #00cc00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        }
+        
+        .file-list {
+            margin-top: 15px;
+            background-color: var(--hacker-light);
+            padding: 15px;
+            border-radius: 3px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        
+        .remove-file {
+            color: #ff5252;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+        }
+        
+        .status-message {
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 3px;
+            text-align: center;
+            display: none;
+        }
+        
+        .status-message.success {
+            background-color: rgba(0, 255, 0, 0.1);
+            color: var(--hacker-green);
+            border: 1px solid var(--hacker-green);
+            display: block;
+        }
+        
+        .status-message.error {
+            background-color: rgba(255, 0, 0, 0.1);
+            color: #ff5252;
+            border: 1px solid #ff5252;
+            display: block;
+        }
+        
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            input, textarea, select {
+                padding: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>مرحباً بك في صفحتي الأولى</h1>
-        <p>هذه صفحة ويب بسيطة تم إنشاؤها باستخدام HTML فقط.</p>
-        <p>يمكنك إضافة المزيد من المحتوى هنا مثل النصوص والصور والروابط.</p>
-        <p>تم تصميم هذه الصفحة لتكون متجاوبة مع مختلف أحجام الشاشات.</p>
+        <header>
+            <h1>طلب خدمة</h1>
+            <p class="subtitle">املأ النموذج أدناه لطلب الخدمة المطلوبة</p>
+        </header>
+        
+        <form id="service-form">
+            <div class="form-group">
+                <label for="name">الاسم:</label>
+                <input type="text" id="name" placeholder="أدخل اسمك الكامل">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني:</label>
+                <input type="email" id="email" placeholder="example@domain.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="service-type">نوع الخدمة المطلوبة:</label>
+                <select id="service-type">
+                    <option value="">اختر نوع الخدمة</option>
+                    <option value="برمجة">برمجة</option>
+                    <option value="تصميم">تصميم</option>
+                    <option value="تطوير ويب">تطوير ويب</option>
+                    <option value="تسويق">تسويق</option>
+                    <option value="أخرى">أخرى</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">وصف الخدمة المطلوبة:</label>
+                <textarea id="description" placeholder="صف بالتفصيل الخدمة التي تريدها..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>رفع الملفات (صور، فيديو، صوت):</label>
+                <div class="file-upload">
+                    <div class="file-upload-btn">انقر لاختيار الملفات أو اسحبها هنا</div>
+                    <input type="file" id="file-input" multiple accept="image/*,video/*,audio/*">
+                </div>
+                
+                <div class="file-list" id="file-list">
+                    <!-- الملفات المرفوعة ستظهر هنا -->
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>تسجيل صوتي (حتى 5 دقائق):</label>
+                <div class="audio-recorder">
+                    <button type="button" class="record-btn" id="record-btn">بدء التسجيل</button>
+                    <button type="button" class="record-btn" id="stop-btn" disabled>إيقاف التسجيل</button>
+                    <div class="timer" id="timer">00:00</div>
+                    <audio id="recorded-audio" controls style="display: none; width: 100%; margin-top: 10px;"></audio>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">إرسال الطلب</button>
+            
+            <div class="status-message" id="status-message"></div>
+        </form>
     </div>
+
+    <script>
+        // بيانات التلغرام (يجب استبدالها بقيمك الخاصة)
+        const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';
+        const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';
+        
+        // عناصر DOM
+        const form = document.getElementById('service-form');
+        const fileInput = document.getElementById('file-input');
+        const fileList = document.getElementById('file-list');
+        const recordBtn = document.getElementById('record-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const timer = document.getElementById('timer');
+        const recordedAudio = document.getElementById('recorded-audio');
+        const statusMessage = document.getElementById('status-message');
+        
+        // متغيرات التسجيل الصوتي
+        let mediaRecorder;
+        let audioChunks = [];
+        let recording = false;
+        let startTime;
+        let timerInterval;
+        
+        // الملفات المرفوعة
+        let uploadedFiles = [];
+        let recordedAudioFile = null;
+        
+        // إدارة الملفات المرفوعة
+        fileInput.addEventListener('change', function() {
+            for (let file of this.files) {
+                uploadedFiles.push(file);
+                displayFile(file);
+            }
+            this.value = ''; // إعادة تعيين حقل الرفع
+        });
+        
+        // دعم سحب وإفلات الملفات
+        const fileUploadBtn = document.querySelector('.file-upload-btn');
+        
+        fileUploadBtn.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = 'rgba(0, 255, 0, 0.2)';
+        });
+        
+        fileUploadBtn.addEventListener('dragleave', function() {
+            this.style.backgroundColor = '';
+        });
+        
+        fileUploadBtn.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = '';
+            
+            const files = e.dataTransfer.files;
+            for (let file of files) {
+                uploadedFiles.push(file);
+                displayFile(file);
+            }
+        });
+        
+        // عرض الملفات المرفوعة
+        function displayFile(file) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            
+            const fileInfo = document.createElement('span');
+            fileInfo.textContent = `${file.name} (${formatFileSize(file.size)})`;
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-file';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = function() {
+                uploadedFiles = uploadedFiles.filter(f => f !== file);
+                fileItem.remove();
+            };
+            
+            fileItem.appendChild(fileInfo);
+            fileItem.appendChild(removeBtn);
+            fileList.appendChild(fileItem);
+        }
+        
+        // تنسيق حجم الملف
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // بدء التسجيل الصوتي
+        recordBtn.addEventListener('click', async function() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    recordedAudio.src = URL.createObjectURL(audioBlob);
+                    recordedAudio.style.display = 'block';
+                    
+                    // إنشاء ملف من التسجيل
+                    recordedAudioFile = new File([audioBlob], 'تسجيل صوتي.wav', { type: 'audio/wav' });
+                    
+                    // إيقاف الميكروفون
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                
+                mediaRecorder.start();
+                recording = true;
+                recordBtn.disabled = true;
+                stopBtn.disabled = false;
+                recordBtn.classList.add('recording');
+                
+                // بدء المؤقت
+                startTime = new Date();
+                timerInterval = setInterval(updateTimer, 1000);
+                
+            } catch (error) {
+                showStatus('خطأ في الوصول إلى الميكروفون', 'error');
+            }
+        });
+        
+        // إيقاف التسجيل الصوتي
+        stopBtn.addEventListener('click', function() {
+            if (mediaRecorder && recording) {
+                mediaRecorder.stop();
+                recording = false;
+                recordBtn.disabled = false;
+                stopBtn.disabled = true;
+                recordBtn.classList.remove('recording');
+                
+                // إيقاف المؤقت
+                clearInterval(timerInterval);
+            }
+        });
+        
+        // تحديث المؤقت
+        function updateTimer() {
+            const currentTime = new Date();
+            const elapsedTime = Math.floor((currentTime - startTime) / 1000);
+            
+            // الحد الأقصى للتسجيل: 5 دقائق (300 ثانية)
+            if (elapsedTime >= 300) {
+                stopBtn.click();
+                showStatus('تم الوصول إلى الحد الأقصى للتسجيل (5 دقائق)', 'success');
+                return;
+            }
+            
+            const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
+            const seconds = (elapsedTime % 60).toString().padStart(2, '0');
+            timer.textContent = `${minutes}:${seconds}`;
+        }
+        
+        // إرسال النموذج
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // جمع بيانات النموذج
+            const formData = new FormData();
+            formData.append('name', document.getElementById('name').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('serviceType', document.getElementById('service-type').value);
+            formData.append('description', document.getElementById('description').value);
+            
+            // إضافة الملفات المرفوعة
+            uploadedFiles.forEach(file => {
+                formData.append('files', file);
+            });
+            
+            // إضافة التسجيل الصوتي إذا كان موجودًا
+            if (recordedAudioFile) {
+                formData.append('files', recordedAudioFile);
+            }
+            
+            // إرسال البيانات إلى التلغرام
+            try {
+                showStatus('جاري إرسال الطلب...', 'success');
+                
+                // إرسال النص كرسالة منفصلة
+                const textMessage = `
+طلب خدمة جديد:
+الاسم: ${document.getElementById('name').value}
+البريد: ${document.getElementById('email').value}
+نوع الخدمة: ${document.getElementById('service-type').value}
+الوصف: ${document.getElementById('description').value}
+                `;
+                
+                await sendToTelegram(textMessage);
+                
+                // إرسال الملفات إذا كانت موجودة
+                if (uploadedFiles.length > 0 || recordedAudioFile) {
+                    await sendFilesToTelegram(formData);
+                }
+                
+                showStatus('تم إرسال طلبك بنجاح! سأتواصل معك قريبًا.', 'success');
+                
+                // إعادة تعيين النموذج بعد 3 ثوان
+                setTimeout(() => {
+                    form.reset();
+                    uploadedFiles = [];
+                    recordedAudioFile = null;
+                    fileList.innerHTML = '';
+                    recordedAudio.style.display = 'none';
+                    timer.textContent = '00:00';
+                    statusMessage.style.display = 'none';
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Error sending to Telegram:', error);
+                showStatus('حدث خطأ أثناء الإرسال. حاول مرة أخرى.', 'error');
+            }
+        });
+        
+        // إرسال النص إلى التلغرام
+        async function sendToTelegram(text) {
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: text
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to send message to Telegram');
+            }
+            
+            return await response.json();
+        }
+        
+        // إرسال الملفات إلى التلغرام (هذه وظيفة مبسطة)
+        async function sendFilesToTelegram(formData) {
+            // في التطبيق الحقيقي، ستحتاج إلى خادم وسيط لإرسال الملفات إلى التلغرام
+            // لأن واجهة برمجة تطبيقات التلغرام لا تدعم إرسال ملفات متعددة مباشرة من JavaScript
+            showStatus('جاري رفع الملفات...', 'success');
+            
+            // هذا مثال مبسط - في التطبيق الحقيقي، ستحتاج إلى خادم وسيط
+            // يمكنك استخدام fetch لإرسال formData إلى خادمك الذي بدوره يرسل الملفات إلى التلغرام
+            
+            // بديل: إرسال إشعار بأن هناك ملفات مرفوعة
+            const filesCount = uploadedFiles.length + (recordedAudioFile ? 1 : 0);
+            await sendToTelegram(`تم رفع ${filesCount} ملف مع الطلب.`);
+        }
+        
+        // عرض رسالة الحالة
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = 'status-message ' + type;
+            statusMessage.style.display = 'block';
+        }
+    </script>
 </body>
 </html>
