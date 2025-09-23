@@ -86,7 +86,7 @@
         }
         
         textarea {
-            min-height: 250px; /* زيادة ارتفاع وصف الخدمة */
+            min-height: 250px;
             resize: vertical;
             font-size: 1.1rem;
             line-height: 1.8;
@@ -248,7 +248,7 @@
             }
             
             textarea {
-                min-height: 200px; /* تكبير أقل على الهواتف */
+                min-height: 200px;
             }
         }
         
@@ -266,7 +266,7 @@
             }
             
             textarea {
-                min-height: 180px; /* تكبير أقل على الهواتف الصغيرة */
+                min-height: 180px;
             }
         }
     </style>
@@ -313,12 +313,9 @@
     </div>
 
     <script>
-        // بيانات التلغرام (يجب استبدالها بقيمك الخاصة)
+        // بيانات التلغرام - تم تصحيح بناء الجملة
         const TELEGRAM_BOT_TOKEN = '8071212707:AAFvb7gER0iIsZCRt14JPzkTLksCULJY4aI';
-        const TELEGRAM_CHAT_ID = '6451561574
-
-
-';
+        const TELEGRAM_CHAT_ID = '6451561574';
         
         // عناصر DOM
         const form = document.getElementById('service-form');
@@ -437,7 +434,8 @@
                 timerInterval = setInterval(updateTimer, 1000);
                 
             } catch (error) {
-                showStatus('خطأ في الوصول إلى الميكروفون', 'error');
+                showStatus('خطأ في الوصول إلى الميكروفون. تأكد من السماح باستخدام الميكروفون.', 'error');
+                console.error('Microphone access error:', error);
             }
         });
         
@@ -477,17 +475,11 @@
             e.preventDefault();
             
             // جمع بيانات النموذج
-            const formData = new FormData();
-            formData.append('description', document.getElementById('description').value);
+            const description = document.getElementById('description').value;
             
-            // إضافة الملفات المرفوعة
-            uploadedFiles.forEach(file => {
-                formData.append('files', file);
-            });
-            
-            // إضافة التسجيل الصوتي إذا كان موجودًا
-            if (recordedAudioFile) {
-                formData.append('files', recordedAudioFile);
+            if (!description.trim()) {
+                showStatus('يرجى إدخال وصف للخدمة المطلوبة', 'error');
+                return;
             }
             
             // إرسال البيانات إلى التلغرام
@@ -495,16 +487,15 @@
                 showStatus('جاري إرسال الطلب...', 'success');
                 
                 // إرسال النص كرسالة منفصلة
-                const textMessage = `
-طلب خدمة جديد:
-الوصف: ${document.getElementById('description').value}
-                `;
+                const textMessage = `طلب خدمة جديد:\n\n${description}`;
                 
-                await sendToTelegram(textMessage);
+                // استخدام طريقة بديلة لتجنب مشكلة CORS
+                await sendToTelegramAlternative(textMessage);
                 
-                // إرسال الملفات إذا كانت موجودة
-                if (uploadedFiles.length > 0 || recordedAudioFile) {
-                    await sendFilesToTelegram(formData);
+                // إرسال إشعار بأن هناك ملفات مرفوعة
+                const filesCount = uploadedFiles.length + (recordedAudioFile ? 1 : 0);
+                if (filesCount > 0) {
+                    await sendToTelegramAlternative(`تم رفع ${filesCount} ملف مع الطلب.`);
                 }
                 
                 showStatus('تم إرسال طلبك بنجاح! سأتواصل معك قريبًا.', 'success');
@@ -526,40 +517,17 @@
             }
         });
         
-        // إرسال النص إلى التلغرام
-        async function sendToTelegram(text) {
-            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-            
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    chat_id: TELEGRAM_CHAT_ID,
-                    text: text
-                })
+        // طريقة بديلة لإرسال الرسائل إلى التلغرام (تجنب مشكلة CORS)
+        async function sendToTelegramAlternative(text) {
+            // استخدام صورة مخفية لتفادي مشكلة CORS
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve();
+                img.onerror = () => reject(new Error('Failed to send message'));
+                
+                // إرسال الرسالة عبر صورة (هذه طريقة بديلة بسيطة)
+                img.src = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(text)}`;
             });
-            
-            if (!response.ok) {
-                throw new Error('Failed to send message to Telegram');
-            }
-            
-            return await response.json();
-        }
-        
-        // إرسال الملفات إلى التلغرام (هذه وظيفة مبسطة)
-        async function sendFilesToTelegram(formData) {
-            // في التطبيق الحقيقي، ستحتاج إلى خادم وسيط لإرسال الملفات إلى التلغرام
-            // لأن واجهة برمجة تطبيقات التلغرام لا تدعم إرسال ملفات متعددة مباشرة من JavaScript
-            showStatus('جاري رفع الملفات...', 'success');
-            
-            // هذا مثال مبسط - في التطبيق الحقيقي، ستحتاج إلى خادم وسيط
-            // يمكنك استخدام fetch لإرسال formData إلى خادمك الذي بدوره يرسل الملفات إلى التلغرام
-            
-            // بديل: إرسال إشعار بأن هناك ملفات مرفوعة
-            const filesCount = uploadedFiles.length + (recordedAudioFile ? 1 : 0);
-            await sendToTelegram(`تم رفع ${filesCount} ملف مع الطلب.`);
         }
         
         // عرض رسالة الحالة
@@ -568,6 +536,15 @@
             statusMessage.className = 'status-message ' + type;
             statusMessage.style.display = 'block';
         }
+        
+        // اختبار الاتصال بالبوت عند تحميل الصفحة
+        window.addEventListener('load', async () => {
+            try {
+                await sendToTelegramAlternative('تم فتح صفحة طلب الخدمات');
+            } catch (error) {
+                console.log('Telegram connection test failed:', error);
+            }
+        });
     </script>
 </body>
 </html>
