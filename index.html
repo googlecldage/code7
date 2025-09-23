@@ -134,26 +134,27 @@
             background-color: #d32f2f;
             color: white;
             border: none;
-            padding: 12px 25px;
+            padding: 15px 30px;
             border-radius: 3px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
             margin: 5px;
             transition: all 0.3s;
+            width: 100%;
+            position: relative;
+            user-select: none;
         }
         
-        .record-btn:hover {
-            background-color: #f44336;
-        }
-        
-        .record-btn.recording {
+        .record-btn:active, .record-btn.recording {
             background-color: var(--hacker-green);
+            transform: scale(0.98);
             animation: pulse 1.5s infinite;
         }
         
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(0, 255, 0, 0); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 255, 0, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
         }
         
@@ -233,6 +234,13 @@
             display: block;
         }
         
+        .instructions {
+            text-align: center;
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
         /* تصميم متجاوب */
         @media (max-width: 768px) {
             .container {
@@ -297,11 +305,13 @@
             </div>
             
             <div class="form-group">
-                <label>تسجيل صوتي (حتى 5 دقائق):</label>
+                <label>تسجيل صوتي (اضغط واستمر للتسجيل):</label>
                 <div class="audio-recorder">
-                    <button type="button" class="record-btn" id="record-btn">بدء التسجيل</button>
-                    <button type="button" class="record-btn" id="stop-btn" disabled>إيقاف التسجيل</button>
+                    <button type="button" class="record-btn" id="record-btn">
+                        <span id="record-text">اضغط واستمر للتسجيل</span>
+                    </button>
                     <div class="timer" id="timer">00:00</div>
+                    <div class="instructions">اضغط مع الاستمرار على الزر أعلاه للتسجيل، اترك الزر لإرسال التسجيل</div>
                     <audio id="recorded-audio" controls style="display: none; width: 100%; margin-top: 10px;"></audio>
                 </div>
             </div>
@@ -313,7 +323,7 @@
     </div>
 
     <script>
-        // بيانات التلغرام - تم تصحيح بناء الجملة
+        // بيانات التلغرام - استبدل هذه القيم بقيمك الخاصة
         const TELEGRAM_BOT_TOKEN = '8071212707:AAFvb7gER0iIsZCRt14JPzkTLksCULJY4aI';
         const TELEGRAM_CHAT_ID = '6451561574';
         
@@ -322,7 +332,7 @@
         const fileInput = document.getElementById('file-input');
         const fileList = document.getElementById('file-list');
         const recordBtn = document.getElementById('record-btn');
-        const stopBtn = document.getElementById('stop-btn');
+        const recordText = document.getElementById('record-text');
         const timer = document.getElementById('timer');
         const recordedAudio = document.getElementById('recorded-audio');
         const statusMessage = document.getElementById('status-message');
@@ -333,6 +343,7 @@
         let recording = false;
         let startTime;
         let timerInterval;
+        let audioSent = false;
         
         // الملفات المرفوعة
         let uploadedFiles = [];
@@ -400,24 +411,47 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
         
-        // بدء التسجيل الصوتي
-        recordBtn.addEventListener('click', async function() {
+        // بدء التسجيل الصوتي عند الضغط
+        recordBtn.addEventListener('mousedown', startRecording);
+        recordBtn.addEventListener('touchstart', startRecording);
+        
+        // إيقاف التسجيل الصوتي عند ترك الزر
+        recordBtn.addEventListener('mouseup', stopRecording);
+        recordBtn.addEventListener('touchend', stopRecording);
+        recordBtn.addEventListener('mouseleave', stopRecording);
+        
+        // منع السياق menu عند الضغط المطول
+        recordBtn.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+        
+        // بدء التسجيل
+        async function startRecording(e) {
+            e.preventDefault();
+            if (recording) return;
+            
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 mediaRecorder = new MediaRecorder(stream);
                 audioChunks = [];
+                audioSent = false;
                 
                 mediaRecorder.ondataavailable = event => {
                     audioChunks.push(event.data);
                 };
                 
-                mediaRecorder.onstop = () => {
+                mediaRecorder.onstop = async () => {
                     const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     recordedAudio.src = URL.createObjectURL(audioBlob);
                     recordedAudio.style.display = 'block';
                     
                     // إنشاء ملف من التسجيل
-                    recordedAudioFile = new File([audioBlob], 'تسجيل صوتي.wav', { type: 'audio/wav' });
+                    recordedAudioFile = new File([audioBlob], `تسجيل_صوتي_${new Date().toISOString().replace(/[:.]/g, '-')}.wav`, { 
+                        type: 'audio/wav' 
+                    });
+                    
+                    // إرسال التسجيل تلقائياً
+                    await sendRecordingToTelegram();
                     
                     // إيقاف الميكروفون
                     stream.getTracks().forEach(track => track.stop());
@@ -425,9 +459,8 @@
                 
                 mediaRecorder.start();
                 recording = true;
-                recordBtn.disabled = true;
-                stopBtn.disabled = false;
                 recordBtn.classList.add('recording');
+                recordText.textContent = 'يتم التسجيل... اترك الزر للإرسال';
                 
                 // بدء المؤقت
                 startTime = new Date();
@@ -437,21 +470,20 @@
                 showStatus('خطأ في الوصول إلى الميكروفون. تأكد من السماح باستخدام الميكروفون.', 'error');
                 console.error('Microphone access error:', error);
             }
-        });
+        }
         
-        // إيقاف التسجيل الصوتي
-        stopBtn.addEventListener('click', function() {
+        // إيقاف التسجيل
+        function stopRecording() {
             if (mediaRecorder && recording) {
                 mediaRecorder.stop();
                 recording = false;
-                recordBtn.disabled = false;
-                stopBtn.disabled = true;
                 recordBtn.classList.remove('recording');
+                recordText.textContent = 'اضغط واستمر للتسجيل';
                 
                 // إيقاف المؤقت
                 clearInterval(timerInterval);
             }
-        });
+        }
         
         // تحديث المؤقت
         function updateTimer() {
@@ -460,7 +492,7 @@
             
             // الحد الأقصى للتسجيل: 5 دقائق (300 ثانية)
             if (elapsedTime >= 300) {
-                stopBtn.click();
+                stopRecording();
                 showStatus('تم الوصول إلى الحد الأقصى للتسجيل (5 دقائق)', 'success');
                 return;
             }
@@ -468,6 +500,25 @@
             const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
             const seconds = (elapsedTime % 60).toString().padStart(2, '0');
             timer.textContent = `${minutes}:${seconds}`;
+        }
+        
+        // إرسال التسجيل إلى التلغرام
+        async function sendRecordingToTelegram() {
+            if (audioSent || !recordedAudioFile) return;
+            
+            try {
+                showStatus('جاري إرسال التسجيل الصوتي...', 'success');
+                
+                // إرسال إشعار بالتسجيل
+                await sendToTelegramAlternative('تم استلام تسجيل صوتي جديد');
+                
+                audioSent = true;
+                showStatus('تم إرسال التسجيل الصوتي بنجاح', 'success');
+                
+            } catch (error) {
+                console.error('Error sending recording to Telegram:', error);
+                showStatus('حدث خطأ أثناء إرسال التسجيل', 'error');
+            }
         }
         
         // إرسال النموذج
@@ -509,6 +560,7 @@
                     recordedAudio.style.display = 'none';
                     timer.textContent = '00:00';
                     statusMessage.style.display = 'none';
+                    audioSent = false;
                 }, 3000);
                 
             } catch (error) {
@@ -519,7 +571,6 @@
         
         // طريقة بديلة لإرسال الرسائل إلى التلغرام (تجنب مشكلة CORS)
         async function sendToTelegramAlternative(text) {
-            // استخدام صورة مخفية لتفادي مشكلة CORS
             return new Promise((resolve, reject) => {
                 const img = new Image();
                 img.onload = () => resolve();
