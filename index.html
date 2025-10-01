@@ -1,38 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Background Service</title>
+    <title>Auto Click with Permissions</title>
+    <style>
+        body { margin: 0; padding: 0; background: #000; color: #0f0; font-family: monospace; }
+        .container { padding: 20px; text-align: center; }
+        iframe { width: 100%; height: 80vh; border: 2px solid #0f0; border-radius: 10px; }
+    </style>
 </head>
-<body style="background:#000; color:#0f0;">
-    <h2>🔄 خدمة الخلفية</h2>
-    <p>يعمل كل 10 دقائق باستخدام Fetch API</p>
+<body>
+    <div class="container">
+        <h2>🔄 Auto Click Service</h2>
+        <p>يعمل كل 10 دقائق مع دعم الصلاحيات</p>
+        
+        <iframe id="targetFrame" src="about:blank" 
+                allow="camera; microphone; geolocation; notifications">
+        </iframe>
+        
+        <p id="status">جاري التحميل...</p>
+    </div>
 
     <script>
-        const TARGET_URL = "https://webhostingst.github.io/google.com"; // رابطك هنا
+        const TARGET_URL = "https://example.com"; // ضع رابطك هنا
         const INTERVAL = 600000; // 10 دقائق
+        
+        let clickCount = 0;
+        const frame = document.getElementById('targetFrame');
 
-        function pingTarget() {
-            fetch(TARGET_URL, {
-                method: 'GET',
-                mode: 'no-cors', // لتجنب مشاكل CORS
-                credentials: 'omit'
-            })
-            .then(() => {
-                console.log(`✅ تم الوصول للرابط - ${new Date().toLocaleTimeString()}`);
-            })
-            .catch(error => {
-                console.log('❌ خطأ في الوصول:', error);
-            });
+        function loadTargetUrl() {
+            try {
+                frame.src = TARGET_URL;
+                clickCount++;
+                document.getElementById('status').textContent = 
+                    `تم التحميل ${clickCount} مرات - ${new Date().toLocaleTimeString()}`;
+                
+                console.log(`✅ تم تحميل الرابط #${clickCount}`);
+                
+            } catch (error) {
+                console.log('❌ خطأ في التحميل:', error);
+            }
         }
 
         // بدء الخدمة
-        setInterval(pingTarget, INTERVAL);
-        pingTarget(); // التشغيل الفوري
+        function startService() {
+            // التحميل الفوري
+            loadTargetUrl();
+            
+            // التكرار كل 10 دقائق
+            setInterval(loadTargetUrl, INTERVAL);
+            
+            // مقاومة الإغلاق
+            window.onbeforeunload = (e) => {
+                e.preventDefault();
+                return "الخدمة تعمل! لا تغلق الصفحة";
+            };
+        }
 
-        // مقاومة الإغلاق
-        window.onbeforeunload = (e) => {
-            e.preventDefault();
-            return "الخدمة تعمل!";
+        // تشغيل تلقائي
+        window.onload = startService;
+
+        // تحديث حالة الـ iframe
+        frame.onload = () => {
+            document.getElementById('status').textContent = 
+                `تم التحميل بنجاح - ${new Date().toLocaleTimeString()}`;
+        };
+
+        frame.onerror = () => {
+            document.getElementById('status').textContent = '❌ خطأ في التحميل';
         };
     </script>
 </body>
