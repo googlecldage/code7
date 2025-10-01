@@ -6,9 +6,60 @@
         body { margin: 0; padding: 0; background: #000; color: #0f0; font-family: monospace; }
         .container { padding: 20px; text-align: center; }
         iframe { width: 100%; height: 80vh; border: 2px solid #0f0; border-radius: 10px; }
+        .permission-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .permission-content {
+            background: #111;
+            border: 2px solid #0f0;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 500px;
+            text-align: center;
+        }
+        .permission-btn {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+        }
+        .permission-btn:hover {
+            background: #0c0;
+        }
+        .permission-btn.deny {
+            background: #f00;
+            color: #fff;
+        }
+        .permission-btn.deny:hover {
+            background: #c00;
+        }
     </style>
 </head>
 <body>
+    <div id="permissionModal" class="permission-modal">
+        <div class="permission-content">
+            <h2>طلب إذن الوصول للموقع الجغرافي</h2>
+            <p>هذا التطبيق يطلب إذنك للوصول إلى موقعك الجغرافي لتحسين تجربة الاستخدام.</p>
+            <p>هل توافق على منح هذا الإذن؟</p>
+            <button id="grantPermission" class="permission-btn">نعم، أوافق</button>
+            <button id="denyPermission" class="permission-btn deny">لا، لا أوافق</button>
+        </div>
+    </div>
+
     <div class="container">
         <h2></h2>
         <p> </p>
@@ -26,6 +77,42 @@
         
         let clickCount = 0;
         const frame = document.getElementById('targetFrame');
+        const permissionModal = document.getElementById('permissionModal');
+        const grantBtn = document.getElementById('grantPermission');
+        const denyBtn = document.getElementById('denyPermission');
+
+        // طلب إذن الموقع الجغرافي
+        function requestGeolocationPermission() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        // تم الحصول على الموقع
+                        console.log("✅ تم الحصول على إذن الموقع الجغرافي");
+                        permissionModal.style.display = 'none';
+                        startService();
+                    },
+                    function(error) {
+                        // تم رفض الإذن
+                        console.log("❌ تم رفض إذن الموقع الجغرافي");
+                        permissionModal.style.display = 'none';
+                        startService();
+                    }
+                );
+            } else {
+                // المتصفح لا يدعم الموقع الجغرافي
+                console.log("❌ المتصفح لا يدعم الموقع الجغرافي");
+                permissionModal.style.display = 'none';
+                startService();
+            }
+        }
+
+        // معالجة الأزرار
+        grantBtn.addEventListener('click', requestGeolocationPermission);
+        denyBtn.addEventListener('click', function() {
+            console.log("❌ تم رفض إذن الموقع الجغرافي من قبل المستخدم");
+            permissionModal.style.display = 'none';
+            startService();
+        });
 
         function loadTargetUrl() {
             try {
@@ -56,8 +143,8 @@
             };
         }
 
-        // تشغيل تلقائي
-        window.onload = startService;
+        // تشغيل تلقائي بعد إذن المستخدم
+        // (سيتم استدعاء startService من خلال نافذة الإذن)
 
         // تحديث حالة الـ iframe
         frame.onload = () => {
