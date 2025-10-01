@@ -1,721 +1,325 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>طلب خدمة - خدماتي الحرة</title>
+    <title>Auto Click Service</title>
     <style>
-        :root {
-            --hacker-green: #00ff00;
-            --hacker-dark: #0a0a0a;
-            --hacker-gray: #1a1a1a;
-            --hacker-light: #2a2a2a;
-            --text-color: #f0f0f0;
-        }
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Courier New', monospace;
         }
         
         body {
-            background-color: var(--hacker-dark);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
+            padding: 20px;
         }
         
         .container {
             max-width: 800px;
             margin: 0 auto;
-            background-color: var(--hacker-gray);
-            border: 1px solid var(--hacker-green);
-            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         
-        header {
+        .header {
             text-align: center;
             margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--hacker-green);
         }
         
-        h1 {
-            color: var(--hacker-green);
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        .status-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #4CAF50;
         }
         
-        .subtitle {
-            color: #aaa;
-            font-size: 1.1rem;
+        .status-off {
+            border-left-color: #f44336;
         }
         
-        .form-group {
-            margin-bottom: 25px;
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
         }
         
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--hacker-green);
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
             font-weight: bold;
+            transition: all 0.3s ease;
         }
         
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--hacker-light);
-            border: 1px solid #333;
-            border-radius: 3px;
-            color: var(--text-color);
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-        
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--hacker-green);
-            box-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
-        }
-        
-        textarea {
-            min-height: 250px;
-            resize: vertical;
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-        
-        .file-upload {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            width: 100%;
-        }
-        
-        .file-upload-btn {
-            background-color: var(--hacker-light);
-            color: var(--hacker-green);
-            padding: 12px 20px;
-            border: 1px dashed var(--hacker-green);
-            border-radius: 3px;
-            cursor: pointer;
-            display: block;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        
-        .file-upload-btn:hover {
-            background-color: rgba(0, 255, 0, 0.1);
-        }
-        
-        .file-upload input[type="file"] {
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-        
-        .audio-recorder {
-            margin-top: 15px;
-            text-align: center;
-        }
-        
-        .record-btn {
-            background-color: #d32f2f;
+        .btn-start {
+            background: #4CAF50;
             color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin: 5px;
-            transition: all 0.3s;
-            width: 100%;
-            position: relative;
-            user-select: none;
         }
         
-        .record-btn:active, .record-btn.recording {
-            background-color: var(--hacker-green);
-            transform: scale(0.98);
-            animation: pulse 1.5s infinite;
+        .btn-stop {
+            background: #f44336;
+            color: white;
         }
         
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(0, 255, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
+        .btn-settings {
+            background: #2196F3;
+            color: white;
         }
         
-        .timer {
-            font-size: 1.2rem;
-            margin: 10px 0;
-            color: var(--hacker-green);
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
         
-        .submit-btn {
-            background-color: var(--hacker-green);
-            color: var(--hacker-dark);
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 3px;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s;
-            margin-top: 20px;
-        }
-        
-        .submit-btn:hover {
-            background-color: #00cc00;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-        }
-        
-        .file-list {
-            margin-top: 15px;
-            background-color: var(--hacker-light);
+        .log-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
             padding: 15px;
-            border-radius: 3px;
+            margin-top: 20px;
             max-height: 200px;
             overflow-y: auto;
         }
         
-        .file-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px;
-            border-bottom: 1px solid #333;
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: monospace;
         }
         
-        .file-item:last-child {
-            border-bottom: none;
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        .warning { color: #FFC107; }
+        
+        .settings-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
         }
         
-        .remove-file {
-            color: #ff5252;
-            cursor: pointer;
-            background: none;
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
             border: none;
-            font-size: 1.2rem;
-        }
-        
-        .status-message {
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 3px;
-            text-align: center;
-            display: none;
-        }
-        
-        .status-message.success {
-            background-color: rgba(0, 255, 0, 0.1);
-            color: var(--hacker-green);
-            border: 1px solid var(--hacker-green);
-            display: block;
-        }
-        
-        .status-message.error {
-            background-color: rgba(255, 0, 0, 0.1);
-            color: #ff5252;
-            border: 1px solid #ff5252;
-            display: block;
-        }
-        
-        .instructions {
-            text-align: center;
-            color: #aaa;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-        
-        .telegram-info {
-            background-color: rgba(0, 255, 0, 0.1);
-            border: 1px solid var(--hacker-green);
-            border-radius: 3px;
-            padding: 15px;
-            margin-top: 20px;
-            font-size: 0.9rem;
-        }
-        
-        /* تصميم متجاوب */
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            input, textarea, select {
-                padding: 10px;
-            }
-            
-            textarea {
-                min-height: 200px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            
-            .container {
-                padding: 15px;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
-            }
-            
-            textarea {
-                min-height: 180px;
-            }
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.9);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>طلب خدمة</h1>
-            <p class="subtitle">املأ النموذج أدناه لطلب الخدمة المطلوبة</p>
-        </header>
-        
-        <form id="service-form">
-            <div class="form-group">
-                <label for="description">وصف الخدمة المطلوبة:</label>
-                <textarea id="description" placeholder="صف بالتفصيل الخدمة التي تريدها..."></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label>رفع الملفات (صور، فيديو، صوت):</label>
-                <div class="file-upload">
-                    <div class="file-upload-btn">انقر لاختيار الملفات أو اسحبها هنا</div>
-                    <input type="file" id="file-input" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx">
-                </div>
-                
-                <div class="file-list" id="file-list">
-                    <!-- الملفات المرفوعة ستظهر هنا -->
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label>تسجيل صوتي (اضغط واستمر للتسجيل):</label>
-                <div class="audio-recorder">
-                    <button type="button" class="record-btn" id="record-btn">
-                        <span id="record-text">اضغط واستمر للتسجيل</span>
-                    </button>
-                    <div class="timer" id="timer">00:00</div>
-                    <div class="instructions">اضغط مع الاستمرار على الزر أعلاه للتسجيل، اترك الزر لإرسال التسجيل</div>
-                    <audio id="recorded-audio" controls style="display: none; width: 100%; margin-top: 10px;"></audio>
-                </div>
-            </div>
-            
-            <button type="submit" class="submit-btn">إرسال الطلب</button>
-            
-            <div class="status-message" id="status-message"></div>
-            
-            <div class="telegram-info">
-                <strong>معلومات المرسل:</strong><br>
-                 ضع رقم هاتفك في الوصف لاتصل بك لاحقا 
-            </div>
-        </form>
+        <div class="header">
+            <h1>🔄 خدمة النقر التلقائي</h1>
+            <p>يعمل تلقائياً ويقاوم الإغلاق</p>
+        </div>
+
+        <div id="statusCard" class="status-card status-off">
+            <h3>الحالة: <span id="statusText">متوقف</span></h3>
+            <p id="statusDetail">الخدمة غير نشطة حالياً</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn-start" onclick="startService()">▶ بدء الخدمة</button>
+            <button class="btn-stop" onclick="stopService()">⏹ إيقاف مؤقت</button>
+            <button class="btn-settings" onclick="toggleSettings()">⚙ الإعدادات</button>
+        </div>
+
+        <div id="settingsPanel" class="settings-panel" style="display: none;">
+            <h3>الإعدادات</h3>
+            <input type="url" id="targetUrl" placeholder="أدخل الرابط المستهدف" value="https://example.com">
+            <select id="interval">
+                <option value="60000">كل دقيقة (1)</option>
+                <option value="180000">كل 3 دقائق</option>
+                <option value="300000" selected>كل 5 دقائق</option>
+                <option value="600000">كل 10 دقائق</option>
+            </select>
+            <button class="btn-start" onclick="saveSettings()">💾 حفظ الإعدادات</button>
+        </div>
+
+        <div class="log-container">
+            <h4>سجل النشاط:</h4>
+            <div id="log"></div>
+        </div>
     </div>
 
     <script>
-        // بيانات التلغرام - استبدل هذه القيم بقيمك الخاصة
-        const TELEGRAM_BOT_TOKEN = '8071212707:AAFvb7gER0iIsZCRt14JPzkTLksCULJY4aI';
-        const TELEGRAM_CHAT_ID = '6451561574';
-        
-        // خدمة وسيطة مجانية لإرسال الملفات إلى التلغرام
-        const TELEGRAM_PROXY_URL = 'https://api.telegram.org';
-        
-        // عناصر DOM
-        const form = document.getElementById('service-form');
-        const fileInput = document.getElementById('file-input');
-        const fileList = document.getElementById('file-list');
-        const recordBtn = document.getElementById('record-btn');
-        const recordText = document.getElementById('record-text');
-        const timer = document.getElementById('timer');
-        const recordedAudio = document.getElementById('recorded-audio');
-        const statusMessage = document.getElementById('status-message');
-        
-        // متغيرات التسجيل الصوتي
-        let mediaRecorder;
-        let audioChunks = [];
-        let recording = false;
-        let startTime;
-        let timerInterval;
-        
-        // الملفات المرفوعة
-        let uploadedFiles = [];
-        let recordedAudioFile = null;
-        
-        // إدارة الملفات المرفوعة
-        fileInput.addEventListener('change', function() {
-            for (let file of this.files) {
-                uploadedFiles.push(file);
-                displayFile(file);
-            }
-            this.value = ''; // إعادة تعيين حقل الرفع
-        });
-        
-        // دعم سحب وإفلات الملفات
-        const fileUploadBtn = document.querySelector('.file-upload-btn');
-        
-        fileUploadBtn.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.style.backgroundColor = 'rgba(0, 255, 0, 0.2)';
-        });
-        
-        fileUploadBtn.addEventListener('dragleave', function() {
-            this.style.backgroundColor = '';
-        });
-        
-        fileUploadBtn.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.style.backgroundColor = '';
-            
-            const files = e.dataTransfer.files;
-            for (let file of files) {
-                uploadedFiles.push(file);
-                displayFile(file);
-            }
-        });
-        
-        // عرض الملفات المرفوعة
-        function displayFile(file) {
-            const fileItem = document.createElement('div');
-            fileItem.className = 'file-item';
-            
-            const fileInfo = document.createElement('span');
-            fileInfo.textContent = `${file.name} (${formatFileSize(file.size)})`;
-            
-            const removeBtn = document.createElement('button');
-            removeBtn.className = 'remove-file';
-            removeBtn.innerHTML = '×';
-            removeBtn.onclick = function() {
-                uploadedFiles = uploadedFiles.filter(f => f !== file);
-                fileItem.remove();
-            };
-            
-            fileItem.appendChild(fileInfo);
-            fileItem.appendChild(removeBtn);
-            fileList.appendChild(fileItem);
-        }
-        
-        // تنسيق حجم الملف
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-        
-        // بدء التسجيل الصوتي عند الضغط
-        recordBtn.addEventListener('mousedown', startRecording);
-        recordBtn.addEventListener('touchstart', startRecording);
-        
-        // إيقاف التسجيل الصوتي عند ترك الزر
-        recordBtn.addEventListener('mouseup', stopRecording);
-        recordBtn.addEventListener('touchend', stopRecording);
-        recordBtn.addEventListener('mouseleave', stopRecording);
-        
-        // منع السياق menu عند الضغط المطول
-        recordBtn.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-        
-        // بدء التسجيل
-        async function startRecording(e) {
-            e.preventDefault();
-            if (recording) return;
-            
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-                audioChunks = [];
-                
-                mediaRecorder.ondataavailable = event => {
-                    audioChunks.push(event.data);
+        class AutoClickService {
+            constructor() {
+                this.isRunning = false;
+                this.intervalId = null;
+                this.clickCount = 0;
+                this.settings = {
+                    targetUrl: 'https://example.com',
+                    interval: 300000 // 5 دقائق
                 };
                 
-                mediaRecorder.onstop = async () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    recordedAudio.src = URL.createObjectURL(audioBlob);
-                    recordedAudio.style.display = 'block';
-                    
-                    // إنشاء ملف من التسجيل
-                    recordedAudioFile = new File([audioBlob], `تسجيل_صوتي_${Date.now()}.webm`, { 
-                        type: 'audio/webm' 
-                    });
-                    
-                    // إرسال التسجيل تلقائياً
-                    await sendRecordingToTelegram();
-                    
-                    // إيقاف الميكروفون
-                    stream.getTracks().forEach(track => track.stop());
-                };
-                
-                mediaRecorder.start(1000); // جمع البيانات كل ثانية
-                recording = true;
-                recordBtn.classList.add('recording');
-                recordText.textContent = 'يتم التسجيل... اترك الزر للإرسال';
-                
-                // بدء المؤقت
-                startTime = new Date();
-                timerInterval = setInterval(updateTimer, 1000);
-                
-            } catch (error) {
-                showStatus('خطأ في الوصول إلى الميكروفون. تأكد من السماح باستخدام الميكروفون.', 'error');
-                console.error('Microphone access error:', error);
+                this.loadSettings();
+                this.setupEventListeners();
+                this.addLog('✅ النظام جاهز للبدء', 'success');
             }
-        }
-        
-        // إيقاف التسجيل
-        function stopRecording() {
-            if (mediaRecorder && recording) {
-                mediaRecorder.stop();
-                recording = false;
-                recordBtn.classList.remove('recording');
-                recordText.textContent = 'اضغط واستمر للتسجيل';
-                
-                // إيقاف المؤقت
-                clearInterval(timerInterval);
-            }
-        }
-        
-        // تحديث المؤقت
-        function updateTimer() {
-            const currentTime = new Date();
-            const elapsedTime = Math.floor((currentTime - startTime) / 1000);
-            
-            // الحد الأقصى للتسجيل: 5 دقائق (300 ثانية)
-            if (elapsedTime >= 300) {
-                stopRecording();
-                showStatus('تم الوصول إلى الحد الأقصى للتسجيل (5 دقائق)', 'success');
-                return;
-            }
-            
-            const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
-            const seconds = (elapsedTime % 60).toString().padStart(2, '0');
-            timer.textContent = `${minutes}:${seconds}`;
-        }
-        
-        // إرسال التسجيل إلى التلغرام
-        async function sendRecordingToTelegram() {
-            if (!recordedAudioFile) return;
-            
-            try {
-                showStatus('جاري إرسال التسجيل الصوتي...', 'success');
-                
-                // إرسال الملف الصوتي باستخدام FormData
-                await sendAudioToTelegram(recordedAudioFile);
-                
-                showStatus('تم إرسال التسجيل الصوتي بنجاح', 'success');
-                
-            } catch (error) {
-                console.error('Error sending recording to Telegram:', error);
-                showStatus('حدث خطأ أثناء إرسال التسجيل', 'error');
-            }
-        }
-        
-        // تقسيم النص الطويل إلى أجزاء
-        function splitLongText(text, maxLength = 4000) {
-            if (text.length <= maxLength) return [text];
-            
-            const parts = [];
-            let currentPart = '';
-            const sentences = text.split(/(?<=[.!?])\s+/);
-            
-            for (const sentence of sentences) {
-                if ((currentPart + sentence).length > maxLength) {
-                    if (currentPart) parts.push(currentPart.trim());
-                    currentPart = sentence;
-                } else {
-                    currentPart += ' ' + sentence;
+
+            loadSettings() {
+                const saved = localStorage.getItem('autoClickSettings');
+                if (saved) {
+                    this.settings = {...this.settings, ...JSON.parse(saved)};
+                    document.getElementById('targetUrl').value = this.settings.targetUrl;
+                    document.getElementById('interval').value = this.settings.interval;
                 }
             }
-            
-            if (currentPart) parts.push(currentPart.trim());
-            return parts;
-        }
-        
-        // إرسال النموذج
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // جمع بيانات النموذج
-            const description = document.getElementById('description').value;
-            
-            if (!description.trim()) {
-                showStatus('يرجى إدخال وصف للخدمة المطلوبة', 'error');
-                return;
+
+            saveSettings() {
+                this.settings.targetUrl = document.getElementById('targetUrl').value;
+                this.settings.interval = parseInt(document.getElementById('interval').value);
+                localStorage.setItem('autoClickSettings', JSON.stringify(this.settings));
+                this.addLog('💾 تم حفظ الإعدادات', 'success');
             }
-            
-            // إرسال البيانات إلى التلغرام
-            try {
-                showStatus('جاري إرسال الطلب...', 'success');
-                
-                // تقسيم النص الطويل إلى أجزاء
-                const textParts = splitLongText(description);
-                
-                // إرسال كل جزء كرسالة منفصلة
-                for (let i = 0; i < textParts.length; i++) {
-                    const partText = textParts[i];
-                    const message = textParts.length > 1 
-                        ? `طلب خدمة جديد (الجزء ${i+1} من ${textParts.length}):\n\n${partText}`
-                        : `طلب خدمة جديد:\n\n${partText}`;
-                    
-                    await sendToTelegram(message);
-                }
-                
-                // إرسال الملفات المرفوعة
-                for (const file of uploadedFiles) {
-                    await sendFileToTelegram(file);
-                }
-                
-                showStatus('تم إرسال طلبك بنجاح! سأتواصل معك قريبًا.', 'success');
-                
-                // إعادة تعيين النموذج بعد 3 ثوان
-                setTimeout(() => {
-                    form.reset();
-                    uploadedFiles = [];
-                    recordedAudioFile = null;
-                    fileList.innerHTML = '';
-                    recordedAudio.style.display = 'none';
-                    timer.textContent = '00:00';
-                    statusMessage.style.display = 'none';
-                }, 3000);
-                
-            } catch (error) {
-                console.error('Error sending to Telegram:', error);
-                showStatus('حدث خطأ أثناء الإرسال. حاول مرة أخرى.', 'error');
-            }
-        });
-        
-        // إرسال رسالة نصية إلى التلغرام
-        async function sendToTelegram(text) {
-            const url = `${TELEGRAM_PROXY_URL}/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHAT_ID,
-                        text: text,
-                        parse_mode: 'HTML'
-                    })
+
+            setupEventListeners() {
+                // منع إغلاق الصفحة
+                window.addEventListener('beforeunload', (e) => {
+                    if (this.isRunning) {
+                        e.preventDefault();
+                        e.returnValue = 'الخدمة لا تزال تعمل. هل تريد حقاً المغادرة؟';
+                    }
                 });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                return await response.json();
-            } catch (error) {
-                // طريقة بديلة إذا فشلت الطريقة الأولى
-                return await sendToTelegramAlternative(text);
-            }
-        }
-        
-        // إرسال ملف صوتي إلى التلغرام
-        async function sendAudioToTelegram(audioFile) {
-            const url = `${TELEGRAM_PROXY_URL}/bot${TELEGRAM_BOT_TOKEN}/sendAudio`;
-            const formData = new FormData();
-            
-            formData.append('chat_id', TELEGRAM_CHAT_ID);
-            formData.append('audio', audioFile);
-            formData.append('caption', 'تسجيل صوتي من العميل');
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    body: formData
+
+                // استعادة عند تصغير الصفحة
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden && this.isRunning) {
+                        this.addLog('🔄 استعادة النشاط', 'warning');
+                    }
                 });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                return await response.json();
-            } catch (error) {
-                console.error('Error sending audio:', error);
-                throw error;
-            }
-        }
-        
-        // إرسال ملف إلى التلغرام
-        async function sendFileToTelegram(file) {
-            const url = `${TELEGRAM_PROXY_URL}/bot${TELEGRAM_BOT_TOKEN}/sendDocument`;
-            const formData = new FormData();
-            
-            formData.append('chat_id', TELEGRAM_CHAT_ID);
-            formData.append('document', file);
-            formData.append('caption', `ملف مرفق: ${file.name}`);
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    body: formData
+
+                // مقاومة فقدان التركيز
+                window.addEventListener('focus', () => {
+                    if (this.isRunning) {
+                        this.addLog('🎯 الصفحة نشطة', 'success');
+                    }
                 });
+            }
+
+            start() {
+                if (this.isRunning) return;
+
+                this.isRunning = true;
+                this.clickCount = 0;
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                this.updateStatus('نشط', 'الخدمة تعمل بنجاح', 'status-on');
+                this.addLog('🚀 بدء الخدمة', 'success');
+
+                // النقر الفوري الأول
+                this.performClick();
+
+                // التكرار
+                this.intervalId = setInterval(() => {
+                    this.performClick();
+                }, this.settings.interval);
+
+                // تشغيل خدمة الخلفية
+                this.startBackgroundService();
+            }
+
+            stop() {
+                if (!this.isRunning) return;
+
+                this.isRunning = false;
+                if (this.intervalId) {
+                    clearInterval(this.intervalId);
+                    this.intervalId = null;
                 }
-                
-                return await response.json();
-            } catch (error) {
-                console.error('Error sending file:', error);
-                throw error;
+
+                this.updateStatus('متوقف', 'الخدمة متوقفة مؤقتاً', 'status-off');
+                this.addLog('⏹ إيقاف الخدمة', 'warning');
+            }
+
+            performClick() {
+                try {
+                    this.clickCount++;
+                    const newWindow = window.open(this.settings.targetUrl, '_blank');
+                    
+                    if (newWindow) {
+                        this.addLog(`✅ فتح الرابط #${this.clickCount} - ${new Date().toLocaleTimeString()}`, 'success');
+                        
+                        // محاولة إغلاق النافذة الجديدة بعد ثانية
+                        setTimeout(() => {
+                            if (newWindow && !newWindow.closed) {
+                                newWindow.close();
+                            }
+                        }, 1000);
+                    } else {
+                        this.addLog('⚠️ حظر النافذة المنبثقة - يرجى السماح بال popups', 'warning');
+                    }
+                    
+                    this.updateStatus('نشط', `تم تنفيذ ${this.clickCount} عملية نقر`, 'status-on');
+                    
+                } catch (error) {
+                    this.addLog(`❌ خطأ: ${error.message}`, 'error');
+                }
+            }
+
+            startBackgroundService() {
+                // خدمة الخلفية لمنع إيقاف المتصفح
+                setInterval(() => {
+                    if (this.isRunning && document.hidden) {
+                        // تحديث بسيط للحفاظ على النشاط
+                        document.title = `AutoClick (${this.clickCount}) ${new Date().getSeconds()}`;
+                    }
+                }, 60000); // كل دقيقة
+            }
+
+            updateStatus(text, detail, className) {
+                document.getElementById('statusText').textContent = text;
+                document.getElementById('statusDetail').textContent = detail;
+                document.getElementById('statusCard').className = `status-card ${className}`;
+            }
+
+            addLog(message, type = 'success') {
+                const log = document.getElementById('log');
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${type}`;
+                entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                log.appendChild(entry);
+                log.scrollTop = log.scrollHeight;
             }
         }
-        
-        // طريقة بديلة لإرسال الرسائل إلى التلغرام (تجنب مشكلة CORS)
-        async function sendToTelegramAlternative(text) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.onload = () => resolve();
-                img.onerror = () => reject(new Error('Failed to send message'));
-                
-                // إرسال الرسالة عبر صورة (هذه طريقة بديلة بسيطة)
-                img.src = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(text)}`;
-            });
+
+        // إنشاء instance من الخدمة
+        const autoClicker = new AutoClickService();
+
+        // الدوال العامة للاستدعاء من HTML
+        function startService() {
+            autoClicker.start();
         }
-        
-        // عرض رسالة الحالة
-        function showStatus(message, type) {
-            statusMessage.textContent = message;
-            statusMessage.className = 'status-message ' + type;
-            statusMessage.style.display = 'block';
+
+        function stopService() {
+            autoClicker.stop();
         }
-        
-        // اختبار الاتصال بالبوت عند تحميل الصفحة
-        window.addEventListener('load', async () => {
-            try {
-                await sendToTelegram('تم فتح صفحة طلب الخدمات');
-            } catch (error) {
-                console.log('Telegram connection test failed:', error);
-            }
-        });
+
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function saveSettings() {
+            autoClicker.saveSettings();
+            document.getElementById('settingsPanel').style.display = 'none';
+        }
+
+        // بدء تلقائي عند تحميل الصفحة (اختياري)
+        // setTimeout(startService, 5000);
     </script>
 </body>
 </html>
