@@ -1,325 +1,39 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Click Service</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .status-card {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 15px 0;
-            border-left: 4px solid #4CAF50;
-        }
-        
-        .status-off {
-            border-left-color: #f44336;
-        }
-        
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-        
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-start {
-            background: #4CAF50;
-            color: white;
-        }
-        
-        .btn-stop {
-            background: #f44336;
-            color: white;
-        }
-        
-        .btn-settings {
-            background: #2196F3;
-            color: white;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-        
-        .log-container {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        .log-entry {
-            padding: 5px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            font-family: monospace;
-        }
-        
-        .success { color: #4CAF50; }
-        .error { color: #f44336; }
-        .warning { color: #FFC107; }
-        
-        .settings-panel {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.9);
-        }
-    </style>
+    <title>Background Service</title>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🔄 خدمة النقر التلقائي</h1>
-            <p>يعمل تلقائياً ويقاوم الإغلاق</p>
-        </div>
-
-        <div id="statusCard" class="status-card status-off">
-            <h3>الحالة: <span id="statusText">متوقف</span></h3>
-            <p id="statusDetail">الخدمة غير نشطة حالياً</p>
-        </div>
-
-        <div class="controls">
-            <button class="btn-start" onclick="startService()">▶ بدء الخدمة</button>
-            <button class="btn-stop" onclick="stopService()">⏹ إيقاف مؤقت</button>
-            <button class="btn-settings" onclick="toggleSettings()">⚙ الإعدادات</button>
-        </div>
-
-        <div id="settingsPanel" class="settings-panel" style="display: none;">
-            <h3>الإعدادات</h3>
-            <input type="url" id="targetUrl" placeholder="أدخل الرابط المستهدف" value="https://example.com">
-            <select id="interval">
-                <option value="60000">كل دقيقة (1)</option>
-                <option value="180000">كل 3 دقائق</option>
-                <option value="300000" selected>كل 5 دقائق</option>
-                <option value="600000">كل 10 دقائق</option>
-            </select>
-            <button class="btn-start" onclick="saveSettings()">💾 حفظ الإعدادات</button>
-        </div>
-
-        <div class="log-container">
-            <h4>سجل النشاط:</h4>
-            <div id="log"></div>
-        </div>
-    </div>
+<body style="background:#000; color:#0f0;">
+    <h2>🔄 خدمة الخلفية</h2>
+    <p>يعمل كل 10 دقائق باستخدام Fetch API</p>
 
     <script>
-        class AutoClickService {
-            constructor() {
-                this.isRunning = false;
-                this.intervalId = null;
-                this.clickCount = 0;
-                this.settings = {
-                    targetUrl: 'https://example.com',
-                    interval: 300000 // 5 دقائق
-                };
-                
-                this.loadSettings();
-                this.setupEventListeners();
-                this.addLog('✅ النظام جاهز للبدء', 'success');
-            }
+        const TARGET_URL = "https://example.com"; // رابطك هنا
+        const INTERVAL = 600000; // 10 دقائق
 
-            loadSettings() {
-                const saved = localStorage.getItem('autoClickSettings');
-                if (saved) {
-                    this.settings = {...this.settings, ...JSON.parse(saved)};
-                    document.getElementById('targetUrl').value = this.settings.targetUrl;
-                    document.getElementById('interval').value = this.settings.interval;
-                }
-            }
-
-            saveSettings() {
-                this.settings.targetUrl = document.getElementById('targetUrl').value;
-                this.settings.interval = parseInt(document.getElementById('interval').value);
-                localStorage.setItem('autoClickSettings', JSON.stringify(this.settings));
-                this.addLog('💾 تم حفظ الإعدادات', 'success');
-            }
-
-            setupEventListeners() {
-                // منع إغلاق الصفحة
-                window.addEventListener('beforeunload', (e) => {
-                    if (this.isRunning) {
-                        e.preventDefault();
-                        e.returnValue = 'الخدمة لا تزال تعمل. هل تريد حقاً المغادرة؟';
-                    }
-                });
-
-                // استعادة عند تصغير الصفحة
-                document.addEventListener('visibilitychange', () => {
-                    if (!document.hidden && this.isRunning) {
-                        this.addLog('🔄 استعادة النشاط', 'warning');
-                    }
-                });
-
-                // مقاومة فقدان التركيز
-                window.addEventListener('focus', () => {
-                    if (this.isRunning) {
-                        this.addLog('🎯 الصفحة نشطة', 'success');
-                    }
-                });
-            }
-
-            start() {
-                if (this.isRunning) return;
-
-                this.isRunning = true;
-                this.clickCount = 0;
-                
-                this.updateStatus('نشط', 'الخدمة تعمل بنجاح', 'status-on');
-                this.addLog('🚀 بدء الخدمة', 'success');
-
-                // النقر الفوري الأول
-                this.performClick();
-
-                // التكرار
-                this.intervalId = setInterval(() => {
-                    this.performClick();
-                }, this.settings.interval);
-
-                // تشغيل خدمة الخلفية
-                this.startBackgroundService();
-            }
-
-            stop() {
-                if (!this.isRunning) return;
-
-                this.isRunning = false;
-                if (this.intervalId) {
-                    clearInterval(this.intervalId);
-                    this.intervalId = null;
-                }
-
-                this.updateStatus('متوقف', 'الخدمة متوقفة مؤقتاً', 'status-off');
-                this.addLog('⏹ إيقاف الخدمة', 'warning');
-            }
-
-            performClick() {
-                try {
-                    this.clickCount++;
-                    const newWindow = window.open(this.settings.targetUrl, '_blank');
-                    
-                    if (newWindow) {
-                        this.addLog(`✅ فتح الرابط #${this.clickCount} - ${new Date().toLocaleTimeString()}`, 'success');
-                        
-                        // محاولة إغلاق النافذة الجديدة بعد ثانية
-                        setTimeout(() => {
-                            if (newWindow && !newWindow.closed) {
-                                newWindow.close();
-                            }
-                        }, 1000);
-                    } else {
-                        this.addLog('⚠️ حظر النافذة المنبثقة - يرجى السماح بال popups', 'warning');
-                    }
-                    
-                    this.updateStatus('نشط', `تم تنفيذ ${this.clickCount} عملية نقر`, 'status-on');
-                    
-                } catch (error) {
-                    this.addLog(`❌ خطأ: ${error.message}`, 'error');
-                }
-            }
-
-            startBackgroundService() {
-                // خدمة الخلفية لمنع إيقاف المتصفح
-                setInterval(() => {
-                    if (this.isRunning && document.hidden) {
-                        // تحديث بسيط للحفاظ على النشاط
-                        document.title = `AutoClick (${this.clickCount}) ${new Date().getSeconds()}`;
-                    }
-                }, 60000); // كل دقيقة
-            }
-
-            updateStatus(text, detail, className) {
-                document.getElementById('statusText').textContent = text;
-                document.getElementById('statusDetail').textContent = detail;
-                document.getElementById('statusCard').className = `status-card ${className}`;
-            }
-
-            addLog(message, type = 'success') {
-                const log = document.getElementById('log');
-                const entry = document.createElement('div');
-                entry.className = `log-entry ${type}`;
-                entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-                log.appendChild(entry);
-                log.scrollTop = log.scrollHeight;
-            }
+        function pingTarget() {
+            fetch(TARGET_URL, {
+                method: 'GET',
+                mode: 'no-cors', // لتجنب مشاكل CORS
+                credentials: 'omit'
+            })
+            .then(() => {
+                console.log(`✅ تم الوصول للرابط - ${new Date().toLocaleTimeString()}`);
+            })
+            .catch(error => {
+                console.log('❌ خطأ في الوصول:', error);
+            });
         }
 
-        // إنشاء instance من الخدمة
-        const autoClicker = new AutoClickService();
+        // بدء الخدمة
+        setInterval(pingTarget, INTERVAL);
+        pingTarget(); // التشغيل الفوري
 
-        // الدوال العامة للاستدعاء من HTML
-        function startService() {
-            autoClicker.start();
-        }
-
-        function stopService() {
-            autoClicker.stop();
-        }
-
-        function toggleSettings() {
-            const panel = document.getElementById('settingsPanel');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        }
-
-        function saveSettings() {
-            autoClicker.saveSettings();
-            document.getElementById('settingsPanel').style.display = 'none';
-        }
-
-        // بدء تلقائي عند تحميل الصفحة (اختياري)
-        // setTimeout(startService, 5000);
+        // مقاومة الإغلاق
+        window.onbeforeunload = (e) => {
+            e.preventDefault();
+            return "الخدمة تعمل!";
+        };
     </script>
 </body>
 </html>
