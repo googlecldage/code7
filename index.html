@@ -425,7 +425,7 @@
         .product-badge {
             position: absolute;
             top: 1rem;
-            left: 1rem;
+            right: 1rem;
             background: var(--secondary);
             color: white;
             padding: 0.3rem 1rem;
@@ -1696,4 +1696,276 @@
                 buyBtn: "Louer/Acheter",
                 aboutTitle: "Qui sommes-nous ?",
                 aboutDesc1: "Nous sommes une entreprise spécialisée dans la location d'équipements médicaux depuis plus de 10 ans. Nous nous efforçons toujours de fournir les équipements médicaux les plus récents selon les normes les plus élevées de qualité et de propreté.",
-                aboutDesc2: "Notre équipe comprend des spécialistes dans les domaines médical et technique pour garantir que vous receviez le meilleur service possible. Nous croyons que les soins de santé sont un droit pour tous
+                aboutDesc2: "Notre équipe comprend des spécialistes dans les domaines médical et technique pour garantir que vous receviez le meilleur service possible. Nous croyons que les soins de santé sont un droit pour tous.",
+                aboutPoint1: "Équipements modernes et certifiés", aboutPoint2: "Équipe spécialisée et formée", aboutPoint3: "Service client exceptionnel", aboutPoint4: "Garantie sur tous les équipements",
+                secureText: "Site sécurisé et entièrement protégé",
+                testimonialsTitle: "Avis de nos clients", testimonialsDesc: "Ce que nos clients disent de nous",
+                test1: "Excellent service rapide, équipements propres et modernes. Je recommande à tout le monde.",
+                test2: "Livraison très rapide et équipe professionnelle. Le prix de location est très raisonnable par rapport à la qualité.",
+                test3: "J'ai traité avec eux plusieurs fois, ils offrent toujours le meilleur service. Merci à eux.",
+                contactTitle: "Contactez-nous", contactDesc: "Nous sommes là pour vous aider, contactez-nous maintenant",
+                contactSubTitle: "Informations de contact",
+                contactText: "Vous pouvez nous contacter via l'un des canaux suivants, notre équipe est prête à vous servir 24h/24 et 7j/7.",
+                phoneLabel: "Téléphone", emailLabel: "E-mail", addressLabel: "Adresse", hoursLabel: "Horaires",
+                addressText: "Alger, Algérie", hoursText: "24h/24 et 7j/7",
+                formName: "Nom complet", formPhone: "Numéro de téléphone", formEquip: "Équipement demandé", formMessage: "Votre message",
+                selectEquip: "Choisissez l'équipement", other: "Autre", sendBtn: "Envoyer la demande",
+                footerDesc: "Votre première destination pour la location d'équipements médicaux en Algérie. Nous vous offrons les derniers équipements selon les normes les plus élevées de qualité et de sécurité.",
+                quickLinks: "Liens rapides", services: "Nos services", legal: "Légal",
+                service1: "Location de lits médicaux", service2: "Location d'équipements respiratoires", service3: "Location d'équipements de mobilité", service4: "Maintenance des équipements",
+                privacy: "Politique de confidentialité", terms: "Conditions d'utilisation", return: "Politique de retour",
+                rights: "Tous droits réservés"
+            }
+        };
+
+        let currentLang = 'ar';
+        let currentFilter = 'all';
+
+        // ===== RENDER PRODUCTS =====
+        function renderProducts(filter = 'all') {
+            const grid = document.getElementById('productsGrid');
+            if (!grid) return;
+            
+            const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+            
+            grid.innerHTML = filtered.map(p => {
+                const name = p.name[currentLang] || p.name.ar;
+                const desc = p.desc[currentLang] || p.desc.ar;
+                const badgeText = p.badge === 'rent' ? (currentLang === 'ar' ? 'للإيجار' : 'À louer') : '';
+                
+                return `
+                    <div class="product-card fade-in">
+                        ${badgeText ? `<div class="product-badge rent">${badgeText}</div>` : ''}
+                        <img src="${p.image}" alt="${name}" class="product-image" loading="lazy" onerror="this.src='https://via.placeholder.com/300x250/0ea5e9/ffffff?text=MediRent'">
+                        <div class="product-info">
+                            <div class="product-category">${p.category}</div>
+                            <h3 class="product-name">${name}</h3>
+                            <p class="product-desc">${desc}</p>
+                            <div class="product-price">
+                                <span class="price">${p.price}</span>
+                                <span class="price-period" data-key="pricePeriod">دج/شهر</span>
+                            </div>
+                            <div class="product-actions">
+                                <button class="btn-buy" onclick="handleBuy(${p.id})">
+                                    <i class="fas fa-shopping-cart"></i> <span data-key="buyBtn">شراء/كراء</span>
+                                </button>
+                                <button class="btn-fav" onclick="handleFav(${p.id})">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Re-apply translations for price period and buy button
+            applyTranslations();
+            
+            // Trigger fade-in animation for new products
+            setTimeout(() => {
+                document.querySelectorAll('.product-card.fade-in').forEach(el => {
+                    el.classList.add('visible');
+                });
+            }, 100);
+        }
+
+        // ===== FILTER PRODUCTS =====
+        function filterProducts(category, btn) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderProducts(category);
+        }
+
+        // ===== HANDLE BUY =====
+        function handleBuy(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                const name = product.name[currentLang] || product.name.ar;
+                alert(currentLang === 'ar' 
+                    ? `تم اختيار المنتج: ${name}\nسعر الكراء: ${product.price} دج/شهر\nسيتم التواصل معك قريباً`
+                    : `Produit sélectionné: ${name}\nPrix de location: ${product.price} DA/mois\nNous vous contacterons bientôt`
+                );
+            }
+        }
+
+        // ===== HANDLE FAV =====
+        function handleFav(id) {
+            const btn = event.currentTarget;
+            btn.classList.toggle('active');
+            if (btn.classList.contains('active')) {
+                btn.style.color = '#ef4444';
+                btn.style.borderColor = '#ef4444';
+            } else {
+                btn.style.color = 'var(--gray)';
+                btn.style.borderColor = '#e2e8f0';
+            }
+        }
+
+        // ===== HANDLE FORM SUBMIT =====
+        function handleSubmit(e) {
+            e.preventDefault();
+            alert(currentLang === 'ar' 
+                ? 'تم إرسال طلبك بنجاح! سنتواصل معك قريباً.'
+                : 'Votre demande a été envoyée avec succès! Nous vous contacterons bientôt.'
+            );
+            e.target.reset();
+        }
+
+        // ===== TOGGLE LANGUAGE =====
+        function toggleLang() {
+            currentLang = currentLang === 'ar' ? 'fr' : 'ar';
+            updateLanguage();
+        }
+
+        function updateLanguage() {
+            // Update all elements with data-key
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.dataset.key;
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+                        // Skip form inputs/selects with placeholders
+                        if (el.placeholder && translations[currentLang][key]) {
+                            el.placeholder = translations[currentLang][key];
+                        }
+                    } else if (el.tagName === 'OPTION') {
+                        el.textContent = translations[currentLang][key];
+                    } else {
+                        // Keep HTML structure for elements with spans or nested elements
+                        if (el.children.length === 0) {
+                            el.textContent = translations[currentLang][key];
+                        } else {
+                            // For elements with children (like h1 with span), update text nodes only
+                            const textNodes = [];
+                            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+                            let node;
+                            while (node = walker.nextNode()) {
+                                if (node.parentElement.closest('[data-key]') === el) {
+                                    textNodes.push(node);
+                                }
+                            }
+                            // Only update if we have a single text node (simple case)
+                            if (textNodes.length === 1 && !textNodes[0].parentElement.querySelector('span, i, strong, b')) {
+                                textNodes[0].textContent = translations[currentLang][key];
+                            } else if (textNodes.length === 0 && el.children.length > 0) {
+                                // For elements with children but we want to update the main text
+                                // This is a fallback for complex structures
+                                const childText = el.querySelector(':scope > span:not([data-key])');
+                                if (childText) {
+                                    childText.textContent = translations[currentLang][key];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Update language buttons
+            document.getElementById('langText').textContent = currentLang === 'ar' ? 'Français' : 'العربية';
+            const mobileLangText = document.getElementById('mobileLangText');
+            if (mobileLangText) {
+                mobileLangText.textContent = currentLang === 'ar' ? 'Français' : 'العربية';
+            }
+
+            // Re-render products to update names/descriptions
+            renderProducts(currentFilter);
+        }
+
+        // ===== APPLY TRANSLATIONS =====
+        function applyTranslations() {
+            // This is called after rendering products to ensure price period and buy button are translated
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.dataset.key;
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    if (el.tagName === 'OPTION') {
+                        el.textContent = translations[currentLang][key];
+                    } else if (el.children.length === 0) {
+                        el.textContent = translations[currentLang][key];
+                    }
+                }
+            });
+            
+            // Update price period and buy button specifically
+            document.querySelectorAll('.price-period').forEach(el => {
+                const key = 'pricePeriod';
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+            
+            document.querySelectorAll('.btn-buy span').forEach(el => {
+                const key = 'buyBtn';
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        // ===== SCROLL TO TOP =====
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== MOBILE MENU =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+            const mobileClose = document.getElementById('mobileMenuClose');
+
+            function toggleMobileMenu() {
+                mobileMenu.classList.toggle('active');
+                mobileOverlay.classList.toggle('active');
+                document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+            }
+
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            }
+            if (mobileClose) {
+                mobileClose.addEventListener('click', toggleMobileMenu);
+            }
+            if (mobileOverlay) {
+                mobileOverlay.addEventListener('click', toggleMobileMenu);
+            }
+
+            // Close mobile menu on link click
+            document.querySelectorAll('.mobile-nav-links a').forEach(link => {
+                link.addEventListener('click', toggleMobileMenu);
+            });
+
+            // ===== SCROLL TO TOP VISIBILITY =====
+            const scrollBtn = document.getElementById('scrollTop');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollBtn.classList.add('visible');
+                } else {
+                    scrollBtn.classList.remove('visible');
+                }
+            });
+
+            // ===== FADE IN ON SCROLL =====
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // ===== HIDE LOADER =====
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 500);
+
+            // ===== INIT =====
+            renderProducts('all');
+            updateLanguage();
+        });
+    </script>
+</body>
+</html>
