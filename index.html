@@ -130,22 +130,31 @@
             color: var(--primary);
         }
 
-        .lang-btn, .theme-btn {
+        .lang-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .lang-btn {
             background: none;
             border: 2px solid var(--primary);
             color: var(--primary);
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 50px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             font-family: inherit;
             transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-size: 0.85rem;
         }
 
-        .lang-btn:hover, .theme-btn:hover {
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .lang-btn:hover {
             background: var(--primary);
             color: white;
         }
@@ -514,6 +523,7 @@
             gap: 0.5rem;
             font-family: inherit;
             font-size: 0.95rem;
+            text-decoration: none;
         }
 
         .btn-buy:hover {
@@ -538,6 +548,11 @@
         .btn-fav:hover {
             border-color: var(--danger);
             color: var(--danger);
+        }
+
+        .btn-fav.active {
+            color: var(--danger);
+            border-color: var(--danger);
         }
 
         /* ===== ABOUT ===== */
@@ -716,67 +731,27 @@
             font-size: 0.95rem;
         }
 
-        .contact-form {
-            background: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 1rem;
-            transition: var(--transition);
-            background: var(--light);
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-        }
-
-        .form-group textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        .contact-whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2.5rem;
+            background: #25d366;
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 50px;
+            font-size: 1.1rem;
             font-weight: 700;
-            font-size: 1rem;
             cursor: pointer;
             transition: var(--transition);
+            text-decoration: none;
             font-family: inherit;
+            margin-top: 1rem;
         }
 
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
+        .contact-whatsapp-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
         }
 
         /* ===== FOOTER ===== */
@@ -992,6 +967,18 @@
             color: var(--primary);
         }
 
+        .mobile-lang-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .mobile-lang-group .lang-btn {
+            flex: 1;
+            text-align: center;
+            padding: 0.7rem;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
             .hero-content {
@@ -1118,6 +1105,31 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* ===== WHATSAPP REDIRECT ===== */
+        .whatsapp-redirect-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.9rem 2rem;
+            background: #25d366;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            font-family: inherit;
+            font-size: 1rem;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .whatsapp-redirect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -1141,7 +1153,12 @@
             <li><a href="#products" data-key="products">المعدات</a></li>
             <li><a href="#about" data-key="about">من نحن</a></li>
             <li><a href="#contact" data-key="contact">اتصل بنا</a></li>
-            <li><button class="lang-btn" onclick="toggleLang()" style="width:100%;margin-top:1rem;"><i class="fas fa-globe"></i> <span id="mobileLangText">Français</span></button></li>
+            <li>
+                <div class="mobile-lang-group">
+                    <button class="lang-btn active" onclick="setLang('ar')">العربية</button>
+                    <button class="lang-btn" onclick="setLang('fr')">Français</button>
+                </div>
+            </li>
         </ul>
     </div>
 
@@ -1154,7 +1171,12 @@
                 <li><a href="#products" data-key="products">المعدات</a></li>
                 <li><a href="#about" data-key="about">من نحن</a></li>
                 <li><a href="#contact" data-key="contact">اتصل بنا</a></li>
-                <li><button class="lang-btn" onclick="toggleLang()"><i class="fas fa-globe"></i> <span id="langText">Français</span></button></li>
+                <li>
+                    <div class="lang-group">
+                        <button class="lang-btn active" onclick="setLang('ar')">العربية</button>
+                        <button class="lang-btn" onclick="setLang('fr')">Français</button>
+                    </div>
+                </li>
             </ul>
             <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
         </div>
@@ -1168,7 +1190,7 @@
                 <p data-key="heroDesc">نوفر لك جميع المعدات الطبية اللازمة للرعاية الصحية في المنزل والمستشفيات بأسعار تنافسية وخدمة توصيل سريعة</p>
                 <div class="hero-btns">
                     <a href="#products" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> <span data-key="browseBtn">تصفح المعدات</span></a>
-                    <a href="tel:0771341173" class="btn btn-outline"><i class="fas fa-phone"></i> <span data-key="callBtn">اتصل بنا</span></a>
+                    <a href="https://wa.me/213771341173" class="btn btn-outline" target="_blank"><i class="fab fa-whatsapp"></i> <span data-key="callBtn">اتصل بنا</span></a>
                 </div>
                 <div class="hero-stats">
                     <div class="stat">
@@ -1363,35 +1385,21 @@
                             </div>
                         </div>
                     </div>
+                    <a href="https://wa.me/213771341173" class="contact-whatsapp-btn" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                        <span data-key="whatsappBtn">تواصل عبر واتساب</span>
+                    </a>
                 </div>
                 <div class="contact-form fade-in">
-                    <form onsubmit="handleSubmit(event)">
-                        <div class="form-group">
-                            <label data-key="formName">الاسم الكامل</label>
-                            <input type="text" required placeholder="أدخل اسمك">
-                        </div>
-                        <div class="form-group">
-                            <label data-key="formPhone">رقم الهاتف</label>
-                            <input type="tel" required placeholder="05XXXXXXXX">
-                        </div>
-                        <div class="form-group">
-                            <label data-key="formEquip">المعدات المطلوبة</label>
-                            <select required>
-                                <option value="" data-key="selectEquip">اختر المعدات</option>
-                                <option value="bed">سرير طبي</option>
-                                <option value="wheelchair">كرسي متحرك</option>
-                                <option value="oxygen">مكثف أكسجين</option>
-                                <option value="bp">جهاز ضغط الدم</option>
-                                <option value="nebulizer">بخاخة</option>
-                                <option value="other" data-key="other">أخرى</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label data-key="formMessage">رسالتك</label>
-                            <textarea placeholder="اكتب رسالتك هنا..."></textarea>
-                        </div>
-                        <button type="submit" class="btn-submit"><i class="fas fa-paper-plane"></i> <span data-key="sendBtn">إرسال الطلب</span></button>
-                    </form>
+                    <div style="background: var(--card-bg); padding: 2.5rem; border-radius: var(--radius); box-shadow: var(--shadow-lg); text-align: center;">
+                        <i class="fab fa-whatsapp" style="font-size: 4rem; color: #25d366; margin-bottom: 1.5rem;"></i>
+                        <h3 style="margin-bottom: 1rem; color: var(--dark);" data-key="contactCtaTitle">تواصل معنا مباشرة</h3>
+                        <p style="color: var(--gray); margin-bottom: 2rem; line-height: 1.8;" data-key="contactCtaDesc">للحصول على خدمة سريعة، تواصل معنا عبر واتساب وسنرد عليك فوراً</p>
+                        <a href="https://wa.me/213771341173" class="whatsapp-redirect-btn" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                            <span data-key="whatsappCtaBtn">تواصل عبر واتساب الآن</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1547,7 +1555,6 @@
                 image: "https://kimi-web-img.moonshot.cn/img/cdnmedia.endeavorsuite.com/64e2b35c4bc889f3d848e207f9c72ab48ee9b5f0.png",
                 badge: "rent"
             },
-            // Additional placeholder products (you can replace images later)
             {
                 id: 11,
                 name: { ar: "سرير طبي كهربائي فاخر", fr: "Lit médical électrique luxe" },
@@ -1646,7 +1653,7 @@
                 home: "الرئيسية", products: "المعدات", about: "من نحن", contact: "اتصل بنا",
                 heroTitle: "كراء المعدات الطبية بأعلى جودة",
                 heroDesc: "نوفر لك جميع المعدات الطبية اللازمة للرعاية الصحية في المنزل والمستشفيات بأسعار تنافسية وخدمة توصيل سريعة",
-                browseBtn: "تصفح المعدات", callBtn: "اتصل بنا",
+                browseBtn: "تصفح المعدات", callBtn: "اتصل بنا عبر واتساب",
                 statEquip: "معدات", statClient: "عميل", statService: "خدمة",
                 featuresTitle: "لماذا تختارنا؟", featuresDesc: "نقدم لك أفضل الخدمات في مجال كراء المعدات الطبية",
                 feat1Title: "معدات معقمة وآمنة", feat1Desc: "جميع معداتنا تمر بعمليات تعقيم صارمة وفحوصات دورية لضمان سلامتك",
@@ -1656,7 +1663,7 @@
                 productsTitle: "معداتنا الطبية", productsDesc: "اختر من مجموعتنا الواسعة من المعدات الطبية المتوفرة للكراء",
                 filterAll: "الكل", filterBeds: "أسرة طبية", filterMobility: "تنقل", filterResp: "تنفس", filterMon: "مراقبة",
                 pricePeriod: "دج/شهر",
-                buyBtn: "شراء/كراء",
+                buyBtn: "كراء عبر واتساب",
                 aboutTitle: "من نحن؟",
                 aboutDesc1: "نحن شركة متخصصة في كراء المعدات الطبية منذ أكثر من 10 سنوات. نسعى دائماً لتوفير أحدث المعدات الطبية بأعلى معايير الجودة والنظافة.",
                 aboutDesc2: "فريقنا يضم متخصصين في المجال الطبي والتقني لضمان حصولك على أفضل خدمة ممكنة. نؤمن بأن الرعاية الصحية حق للجميع.",
@@ -1671,8 +1678,10 @@
                 contactText: "يمكنك التواصل معنا عبر أي من القنوات التالية، فريقنا جاهز لخدمتك على مدار الساعة.",
                 phoneLabel: "الهاتف", emailLabel: "البريد الإلكتروني", addressLabel: "العنوان", hoursLabel: "ساعات العمل",
                 addressText: "الجزائر العاصمة، الجزائر", hoursText: "24 ساعة / 7 أيام",
-                formName: "الاسم الكامل", formPhone: "رقم الهاتف", formEquip: "المعدات المطلوبة", formMessage: "رسالتك",
-                selectEquip: "اختر المعدات", other: "أخرى", sendBtn: "إرسال الطلب",
+                whatsappBtn: "تواصل عبر واتساب",
+                contactCtaTitle: "تواصل معنا مباشرة",
+                contactCtaDesc: "للحصول على خدمة سريعة، تواصل معنا عبر واتساب وسنرد عليك فوراً",
+                whatsappCtaBtn: "تواصل عبر واتساب الآن",
                 footerDesc: "وجهتك الأولى لكراء المعدات الطبية في الجزائر. نقدم لك أحدث المعدات بأعلى معايير الجودة والسلامة.",
                 quickLinks: "روابط سريعة", services: "خدماتنا", legal: "قانوني",
                 service1: "كراء الأسرة الطبية", service2: "كراء معدات التنفس", service3: "كراء معدات التنقل", service4: "صيانة المعدات",
@@ -1683,7 +1692,7 @@
                 home: "Accueil", products: "Équipements", about: "À propos", contact: "Contact",
                 heroTitle: "Location d'équipements médicaux de haute qualité",
                 heroDesc: "Nous vous fournissons tous les équipements médicaux nécessaires pour les soins à domicile et hospitaliers à des prix compétitifs avec livraison rapide",
-                browseBtn: "Parcourir", callBtn: "Appelez-nous",
+                browseBtn: "Parcourir", callBtn: "Contactez-nous via WhatsApp",
                 statEquip: "Équipements", statClient: "Clients", statService: "Service",
                 featuresTitle: "Pourquoi nous choisir ?", featuresDesc: "Nous vous offrons les meilleurs services de location d'équipements médicaux",
                 feat1Title: "Équipements stérilisés et sûrs", feat1Desc: "Tous nos équipements subissent des processus de stérilisation stricts et des contrôles réguliers pour garantir votre sécurité",
@@ -1693,7 +1702,7 @@
                 productsTitle: "Nos équipements médicaux", productsDesc: "Choisissez parmi notre large gamme d'équipements médicaux disponibles à la location",
                 filterAll: "Tous", filterBeds: "Lits médicaux", filterMobility: "Mobilité", filterResp: "Respiratoire", filterMon: "Surveillance",
                 pricePeriod: "DA/mois",
-                buyBtn: "Louer/Acheter",
+                buyBtn: "Louer via WhatsApp",
                 aboutTitle: "Qui sommes-nous ?",
                 aboutDesc1: "Nous sommes une entreprise spécialisée dans la location d'équipements médicaux depuis plus de 10 ans. Nous nous efforçons toujours de fournir les équipements médicaux les plus récents selon les normes les plus élevées de qualité et de propreté.",
                 aboutDesc2: "Notre équipe comprend des spécialistes dans les domaines médical et technique pour garantir que vous receviez le meilleur service possible. Nous croyons que les soins de santé sont un droit pour tous.",
@@ -1708,8 +1717,10 @@
                 contactText: "Vous pouvez nous contacter via l'un des canaux suivants, notre équipe est prête à vous servir 24h/24 et 7j/7.",
                 phoneLabel: "Téléphone", emailLabel: "E-mail", addressLabel: "Adresse", hoursLabel: "Horaires",
                 addressText: "Alger, Algérie", hoursText: "24h/24 et 7j/7",
-                formName: "Nom complet", formPhone: "Numéro de téléphone", formEquip: "Équipement demandé", formMessage: "Votre message",
-                selectEquip: "Choisissez l'équipement", other: "Autre", sendBtn: "Envoyer la demande",
+                whatsappBtn: "Contactez-nous via WhatsApp",
+                contactCtaTitle: "Contactez-nous directement",
+                contactCtaDesc: "Pour un service rapide, contactez-nous via WhatsApp et nous vous répondrons immédiatement",
+                whatsappCtaBtn: "Contactez-nous via WhatsApp maintenant",
                 footerDesc: "Votre première destination pour la location d'équipements médicaux en Algérie. Nous vous offrons les derniers équipements selon les normes les plus élevées de qualité et de sécurité.",
                 quickLinks: "Liens rapides", services: "Nos services", legal: "Légal",
                 service1: "Location de lits médicaux", service2: "Location d'équipements respiratoires", service3: "Location d'équipements de mobilité", service4: "Maintenance des équipements",
@@ -1720,6 +1731,28 @@
 
         let currentLang = 'ar';
         let currentFilter = 'all';
+
+        // ===== SET LANGUAGE =====
+        function setLang(lang) {
+            currentLang = lang;
+            
+            // Update active state for language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((lang === 'ar' && btn.textContent.trim() === 'العربية') ||
+                    (lang === 'fr' && btn.textContent.trim() === 'Français')) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            updateLanguage();
+        }
+
+        // ===== TOGGLE LANGUAGE (for backward compatibility) =====
+        function toggleLang() {
+            const newLang = currentLang === 'ar' ? 'fr' : 'ar';
+            setLang(newLang);
+        }
 
         // ===== RENDER PRODUCTS =====
         function renderProducts(filter = 'all') {
@@ -1746,9 +1779,9 @@
                                 <span class="price-period" data-key="pricePeriod">دج/شهر</span>
                             </div>
                             <div class="product-actions">
-                                <button class="btn-buy" onclick="handleBuy(${p.id})">
-                                    <i class="fas fa-shopping-cart"></i> <span data-key="buyBtn">شراء/كراء</span>
-                                </button>
+                                <a href="https://wa.me/213771341173?text=${encodeURIComponent(currentLang === 'ar' ? `أرغب في كراء ${name} بسعر ${p.price} دج/شهر` : `Je souhaite louer ${name} au prix de ${p.price} DA/mois`)}" class="btn-buy" target="_blank">
+                                    <i class="fab fa-whatsapp"></i> <span data-key="buyBtn">كراء عبر واتساب</span>
+                                </a>
                                 <button class="btn-fav" onclick="handleFav(${p.id})">
                                     <i class="fas fa-heart"></i>
                                 </button>
@@ -1758,7 +1791,7 @@
                 `;
             }).join('');
 
-            // Re-apply translations for price period and buy button
+            // Re-apply translations
             applyTranslations();
             
             // Trigger fade-in animation for new products
@@ -1777,95 +1810,65 @@
             renderProducts(category);
         }
 
-        // ===== HANDLE BUY =====
-        function handleBuy(id) {
-            const product = products.find(p => p.id === id);
-            if (product) {
-                const name = product.name[currentLang] || product.name.ar;
-                alert(currentLang === 'ar' 
-                    ? `تم اختيار المنتج: ${name}\nسعر الكراء: ${product.price} دج/شهر\nسيتم التواصل معك قريباً`
-                    : `Produit sélectionné: ${name}\nPrix de location: ${product.price} DA/mois\nNous vous contacterons bientôt`
-                );
-            }
-        }
-
         // ===== HANDLE FAV =====
         function handleFav(id) {
             const btn = event.currentTarget;
             btn.classList.toggle('active');
-            if (btn.classList.contains('active')) {
-                btn.style.color = '#ef4444';
-                btn.style.borderColor = '#ef4444';
-            } else {
-                btn.style.color = 'var(--gray)';
-                btn.style.borderColor = '#e2e8f0';
-            }
         }
 
-        // ===== HANDLE FORM SUBMIT =====
-        function handleSubmit(e) {
-            e.preventDefault();
-            alert(currentLang === 'ar' 
-                ? 'تم إرسال طلبك بنجاح! سنتواصل معك قريباً.'
-                : 'Votre demande a été envoyée avec succès! Nous vous contacterons bientôt.'
-            );
-            e.target.reset();
-        }
-
-        // ===== TOGGLE LANGUAGE =====
-        function toggleLang() {
-            currentLang = currentLang === 'ar' ? 'fr' : 'ar';
-            updateLanguage();
-        }
-
+        // ===== UPDATE LANGUAGE =====
         function updateLanguage() {
             // Update all elements with data-key
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.dataset.key;
                 if (translations[currentLang] && translations[currentLang][key]) {
                     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
-                        // Skip form inputs/selects with placeholders
                         if (el.placeholder && translations[currentLang][key]) {
                             el.placeholder = translations[currentLang][key];
                         }
                     } else if (el.tagName === 'OPTION') {
                         el.textContent = translations[currentLang][key];
+                    } else if (el.children.length === 0) {
+                        el.textContent = translations[currentLang][key];
                     } else {
-                        // Keep HTML structure for elements with spans or nested elements
-                        if (el.children.length === 0) {
-                            el.textContent = translations[currentLang][key];
-                        } else {
-                            // For elements with children (like h1 with span), update text nodes only
-                            const textNodes = [];
-                            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
-                            let node;
-                            while (node = walker.nextNode()) {
-                                if (node.parentElement.closest('[data-key]') === el) {
-                                    textNodes.push(node);
-                                }
+                        // For elements with children, update text nodes only if no child spans
+                        const textNodes = [];
+                        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+                        let node;
+                        while (node = walker.nextNode()) {
+                            if (node.parentElement.closest('[data-key]') === el) {
+                                textNodes.push(node);
                             }
-                            // Only update if we have a single text node (simple case)
-                            if (textNodes.length === 1 && !textNodes[0].parentElement.querySelector('span, i, strong, b')) {
-                                textNodes[0].textContent = translations[currentLang][key];
-                            } else if (textNodes.length === 0 && el.children.length > 0) {
-                                // For elements with children but we want to update the main text
-                                // This is a fallback for complex structures
-                                const childText = el.querySelector(':scope > span:not([data-key])');
-                                if (childText) {
-                                    childText.textContent = translations[currentLang][key];
-                                }
-                            }
+                        }
+                        if (textNodes.length === 1 && !textNodes[0].parentElement.querySelector('span, i, strong, b')) {
+                            textNodes[0].textContent = translations[currentLang][key];
                         }
                     }
                 }
             });
 
-            // Update language buttons
-            document.getElementById('langText').textContent = currentLang === 'ar' ? 'Français' : 'العربية';
-            const mobileLangText = document.getElementById('mobileLangText');
-            if (mobileLangText) {
-                mobileLangText.textContent = currentLang === 'ar' ? 'Français' : 'العربية';
-            }
+            // Update price period and buy button specifically
+            document.querySelectorAll('.price-period').forEach(el => {
+                const key = 'pricePeriod';
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+            
+            document.querySelectorAll('.btn-buy span').forEach(el => {
+                const key = 'buyBtn';
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+
+            // Update WhatsApp message in product buttons
+            document.querySelectorAll('.btn-buy').forEach(el => {
+                const href = el.getAttribute('href');
+                if (href && href.includes('wa.me')) {
+                    // Keep the link as is, it will use the current language when clicked
+                }
+            });
 
             // Re-render products to update names/descriptions
             renderProducts(currentFilter);
@@ -1873,7 +1876,6 @@
 
         // ===== APPLY TRANSLATIONS =====
         function applyTranslations() {
-            // This is called after rendering products to ensure price period and buy button are translated
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.dataset.key;
                 if (translations[currentLang] && translations[currentLang][key]) {
@@ -1885,7 +1887,6 @@
                 }
             });
             
-            // Update price period and buy button specifically
             document.querySelectorAll('.price-period').forEach(el => {
                 const key = 'pricePeriod';
                 if (translations[currentLang] && translations[currentLang][key]) {
