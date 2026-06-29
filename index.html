@@ -289,10 +289,14 @@
 
         .hero-image {
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .hero-image img {
             width: 100%;
+            max-width: 600px;
             border-radius: var(--radius);
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
             animation: float 6s ease-in-out infinite;
@@ -967,18 +971,6 @@
             color: var(--primary);
         }
 
-        .mobile-lang-group {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .mobile-lang-group .lang-btn {
-            flex: 1;
-            text-align: center;
-            padding: 0.7rem;
-        }
-
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
             .hero-content {
@@ -1002,6 +994,10 @@
                 order: -1;
             }
 
+            .hero-image img {
+                max-width: 400px;
+            }
+
             .about-grid, .contact-grid {
                 grid-template-columns: 1fr;
             }
@@ -1022,6 +1018,10 @@
 
             .hero-text h1 {
                 font-size: 2.2rem;
+            }
+
+            .hero-image img {
+                max-width: 300px;
             }
 
             .section-header h2 {
@@ -1130,6 +1130,40 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
         }
+
+        /* ===== LANGUAGE SELECTOR HERO ===== */
+        .hero-lang-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .hero-lang-group .lang-btn {
+            border-color: rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.7);
+            padding: 0.5rem 1.2rem;
+            font-size: 0.95rem;
+        }
+
+        .hero-lang-group .lang-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .hero-lang-group .lang-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        /* ===== RESPONSIVE FOR HERO LANG ===== */
+        @media (max-width: 768px) {
+            .hero-lang-group {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1153,12 +1187,6 @@
             <li><a href="#products" data-key="products">المعدات</a></li>
             <li><a href="#about" data-key="about">من نحن</a></li>
             <li><a href="#contact" data-key="contact">اتصل بنا</a></li>
-            <li>
-                <div class="mobile-lang-group">
-                    <button class="lang-btn active" onclick="setLang('ar')">العربية</button>
-                    <button class="lang-btn" onclick="setLang('fr')">Français</button>
-                </div>
-            </li>
         </ul>
     </div>
 
@@ -1171,12 +1199,6 @@
                 <li><a href="#products" data-key="products">المعدات</a></li>
                 <li><a href="#about" data-key="about">من نحن</a></li>
                 <li><a href="#contact" data-key="contact">اتصل بنا</a></li>
-                <li>
-                    <div class="lang-group">
-                        <button class="lang-btn active" onclick="setLang('ar')">العربية</button>
-                        <button class="lang-btn" onclick="setLang('fr')">Français</button>
-                    </div>
-                </li>
             </ul>
             <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
         </div>
@@ -1190,7 +1212,7 @@
                 <p data-key="heroDesc">نوفر لك جميع المعدات الطبية اللازمة للرعاية الصحية في المنزل والمستشفيات بأسعار تنافسية وخدمة توصيل سريعة</p>
                 <div class="hero-btns">
                     <a href="#products" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> <span data-key="browseBtn">تصفح المعدات</span></a>
-                    <a href="https://wa.me/213771341173" class="btn btn-outline" target="_blank"><i class="fab fa-whatsapp"></i> <span data-key="callBtn">اتصل بنا</span></a>
+                    <a href="https://wa.me/213771341173" class="btn btn-outline" target="_blank"><i class="fab fa-whatsapp"></i> <span data-key="callBtn">اتصل بنا عبر واتساب</span></a>
                 </div>
                 <div class="hero-stats">
                     <div class="stat">
@@ -1205,6 +1227,11 @@
                         <div class="stat-number">24/7</div>
                         <div class="stat-label" data-key="statService">خدمة</div>
                     </div>
+                </div>
+                <!-- Language Selector in Hero -->
+                <div class="hero-lang-group">
+                    <button class="lang-btn active" onclick="setLang('ar')">العربية</button>
+                    <button class="lang-btn" onclick="setLang('fr')">Français</button>
                 </div>
             </div>
             <div class="hero-image fade-in">
@@ -1677,12 +1704,12 @@
                 contactSubTitle: "معلومات الاتصال",
                 contactText: "يمكنك التواصل معنا عبر أي من القنوات التالية، فريقنا جاهز لخدمتك على مدار الساعة.",
                 phoneLabel: "الهاتف", emailLabel: "البريد الإلكتروني", addressLabel: "العنوان", hoursLabel: "ساعات العمل",
-                addressText: "الجزائر العاصمة، الجزائر", hoursText: "24 ساعة / 7 أيام",
+                addressText: المغرب، المغرب", hoursText: "24 ساعة / 7 أيام",
                 whatsappBtn: "تواصل عبر واتساب",
                 contactCtaTitle: "تواصل معنا مباشرة",
                 contactCtaDesc: "للحصول على خدمة سريعة، تواصل معنا عبر واتساب وسنرد عليك فوراً",
                 whatsappCtaBtn: "تواصل عبر واتساب الآن",
-                footerDesc: "وجهتك الأولى لكراء المعدات الطبية في الجزائر. نقدم لك أحدث المعدات بأعلى معايير الجودة والسلامة.",
+                footerDesc: "وجهتك الأولى لكراء المعدات الطبية في المغرب. نقدم لك أحدث المعدات بأعلى معايير الجودة والسلامة.",
                 quickLinks: "روابط سريعة", services: "خدماتنا", legal: "قانوني",
                 service1: "كراء الأسرة الطبية", service2: "كراء معدات التنفس", service3: "كراء معدات التنقل", service4: "صيانة المعدات",
                 privacy: "سياسة الخصوصية", terms: "شروط الاستخدام", return: "سياسة الإرجاع",
@@ -1746,12 +1773,6 @@
             });
             
             updateLanguage();
-        }
-
-        // ===== TOGGLE LANGUAGE (for backward compatibility) =====
-        function toggleLang() {
-            const newLang = currentLang === 'ar' ? 'fr' : 'ar';
-            setLang(newLang);
         }
 
         // ===== RENDER PRODUCTS =====
@@ -1859,14 +1880,6 @@
                 const key = 'buyBtn';
                 if (translations[currentLang] && translations[currentLang][key]) {
                     el.textContent = translations[currentLang][key];
-                }
-            });
-
-            // Update WhatsApp message in product buttons
-            document.querySelectorAll('.btn-buy').forEach(el => {
-                const href = el.getAttribute('href');
-                if (href && href.includes('wa.me')) {
-                    // Keep the link as is, it will use the current language when clicked
                 }
             });
 
