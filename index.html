@@ -46,7 +46,6 @@
             transition: var(--transition);
         }
 
-        /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -58,7 +57,6 @@
             border-radius: 4px;
         }
 
-        /* ===== NAVBAR ===== */
         .navbar {
             position: fixed;
             top: 0;
@@ -168,7 +166,6 @@
             cursor: pointer;
         }
 
-        /* ===== HERO ===== */
         .hero {
             margin-top: 70px;
             min-height: 90vh;
@@ -202,6 +199,37 @@
             align-items: center;
             position: relative;
             z-index: 1;
+        }
+
+        .hero-text {
+            text-align: right;
+        }
+
+        /* Language buttons at the top of hero */
+        .hero-lang-top {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-lang-top .lang-btn {
+            border-color: rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.7);
+            padding: 0.5rem 1.2rem;
+            font-size: 0.95rem;
+        }
+
+        .hero-lang-top .lang-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .hero-lang-top .lang-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
         }
 
         .hero-text h1 {
@@ -299,15 +327,9 @@
             max-width: 600px;
             border-radius: var(--radius);
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            animation: float 6s ease-in-out infinite;
+            /* Removed animation: float to keep it centered */
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        /* ===== FEATURES ===== */
         .features {
             padding: 6rem 0;
             background: var(--light);
@@ -383,7 +405,6 @@
             font-size: 0.95rem;
         }
 
-        /* ===== PRODUCTS ===== */
         .products {
             padding: 6rem 0;
             background: linear-gradient(180deg, var(--light) 0%, #f1f5f9 100%);
@@ -488,24 +509,6 @@
             line-height: 1.5;
         }
 
-        .product-price {
-            display: flex;
-            align-items: baseline;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .price {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: var(--secondary);
-        }
-
-        .price-period {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
         .product-actions {
             display: flex;
             gap: 0.8rem;
@@ -514,7 +517,7 @@
         .btn-buy {
             flex: 1;
             padding: 0.9rem;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: linear-gradient(135deg, #25d366, #128C7E);
             color: white;
             border: none;
             border-radius: 12px;
@@ -532,7 +535,7 @@
 
         .btn-buy:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
         }
 
         .btn-fav {
@@ -559,7 +562,6 @@
             border-color: var(--danger);
         }
 
-        /* ===== ABOUT ===== */
         .about {
             padding: 6rem 0;
             background: var(--light);
@@ -614,7 +616,6 @@
             font-size: 1.2rem;
         }
 
-        /* ===== TESTIMONIALS ===== */
         .testimonials {
             padding: 6rem 0;
             background: linear-gradient(135deg, #0f172a, #1e3a5f);
@@ -680,7 +681,6 @@
             font-size: 0.9rem;
         }
 
-        /* ===== CONTACT ===== */
         .contact {
             padding: 6rem 0;
             background: var(--light);
@@ -758,7 +758,6 @@
             box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
         }
 
-        /* ===== FOOTER ===== */
         .footer {
             background: var(--darker);
             color: white;
@@ -840,7 +839,6 @@
             color: rgba(255,255,255,0.5);
         }
 
-        /* ===== WHATSAPP FLOAT ===== */
         .whatsapp-float {
             position: fixed;
             bottom: 2rem;
@@ -867,7 +865,6 @@
             100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
         }
 
-        /* ===== SCROLL TO TOP ===== */
         .scroll-top {
             position: fixed;
             bottom: 2rem;
@@ -899,7 +896,6 @@
             transform: translateY(-3px);
         }
 
-        /* ===== MOBILE MENU ===== */
         .mobile-menu {
             position: fixed;
             top: 0;
@@ -971,11 +967,18 @@
             color: var(--primary);
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
             .hero-content {
                 grid-template-columns: 1fr;
                 text-align: center;
+            }
+
+            .hero-text {
+                text-align: center;
+            }
+
+            .hero-lang-top {
+                justify-content: center;
             }
 
             .hero-text p {
@@ -1050,7 +1053,6 @@
             }
         }
 
-        /* ===== ANIMATIONS ===== */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
@@ -1062,7 +1064,6 @@
             transform: translateY(0);
         }
 
-        /* ===== SECURITY BADGE ===== */
         .security-badge {
             display: inline-flex;
             align-items: center;
@@ -1076,7 +1077,6 @@
             margin-top: 1rem;
         }
 
-        /* ===== LOADING ===== */
         .loader {
             position: fixed;
             inset: 0;
@@ -1106,7 +1106,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ===== WHATSAPP REDIRECT ===== */
         .whatsapp-redirect-btn {
             display: inline-flex;
             align-items: center;
@@ -1131,52 +1130,30 @@
             box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
         }
 
-        /* ===== LANGUAGE SELECTOR HERO ===== */
-        .hero-lang-group {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            margin-top: 2rem;
-        }
-
-        .hero-lang-group .lang-btn {
-            border-color: rgba(255,255,255,0.3);
-            color: rgba(255,255,255,0.7);
-            padding: 0.5rem 1.2rem;
+        /* Product contact prompt instead of price */
+        .product-contact-prompt {
+            color: var(--gray);
             font-size: 0.95rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .hero-lang-group .lang-btn.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: white;
-        }
-
-        .hero-lang-group .lang-btn:hover {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: white;
-        }
-
-        /* ===== RESPONSIVE FOR HERO LANG ===== */
-        @media (max-width: 768px) {
-            .hero-lang-group {
-                justify-content: center;
-            }
+        .product-contact-prompt i {
+            color: #25d366;
+            font-size: 1.1rem;
         }
     </style>
 </head>
 <body>
 
-    <!-- Loader -->
     <div class="loader" id="loader">
         <div class="loader-spinner"></div>
     </div>
 
-    <!-- Mobile Menu Overlay -->
     <div class="mobile-menu-overlay" id="mobileOverlay"></div>
 
-    <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="mobile-menu-header">
             <a href="#" class="logo"><i class="fas fa-heartbeat"></i> MediRent</a>
@@ -1190,7 +1167,6 @@
         </ul>
     </div>
 
-    <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="logo"><i class="fas fa-heartbeat"></i> MediRent</a>
@@ -1204,10 +1180,15 @@
         </div>
     </nav>
 
-    <!-- Hero -->
     <section class="hero" id="home">
         <div class="hero-content">
             <div class="hero-text fade-in">
+                <!-- Language buttons at the very top of hero -->
+                <div class="hero-lang-top">
+                    <button class="lang-btn active" onclick="setLang('ar')">العربية</button>
+                    <button class="lang-btn" onclick="setLang('fr')">Français</button>
+                </div>
+                
                 <h1 data-key="heroTitle">كراء المعدات الطبية <span>بأعلى جودة</span></h1>
                 <p data-key="heroDesc">نوفر لك جميع المعدات الطبية اللازمة للرعاية الصحية في المنزل والمستشفيات بأسعار تنافسية وخدمة توصيل سريعة</p>
                 <div class="hero-btns">
@@ -1228,11 +1209,6 @@
                         <div class="stat-label" data-key="statService">خدمة</div>
                     </div>
                 </div>
-                <!-- Language Selector in Hero -->
-                <div class="hero-lang-group">
-                    <button class="lang-btn active" onclick="setLang('ar')">العربية</button>
-                    <button class="lang-btn" onclick="setLang('fr')">Français</button>
-                </div>
             </div>
             <div class="hero-image fade-in">
                 <img src="https://kimi-web-img.moonshot.cn/img/ardenhomehealthcare.co.in/3230b7f9b00407100beebf916e2ee92de8fb9e2a.jpg" alt="Medical Equipment">
@@ -1240,7 +1216,6 @@
         </div>
     </section>
 
-    <!-- Features -->
     <section class="features">
         <div class="container">
             <div class="section-header fade-in">
@@ -1272,7 +1247,6 @@
         </div>
     </section>
 
-    <!-- Products -->
     <section class="products" id="products">
         <div class="container">
             <div class="section-header fade-in">
@@ -1294,7 +1268,6 @@
         </div>
     </section>
 
-    <!-- About -->
     <section class="about" id="about">
         <div class="container">
             <div class="about-grid">
@@ -1320,7 +1293,6 @@
         </div>
     </section>
 
-    <!-- Testimonials -->
     <section class="testimonials">
         <div class="container">
             <div class="section-header fade-in">
@@ -1371,7 +1343,6 @@
         </div>
     </section>
 
-    <!-- Contact -->
     <section class="contact" id="contact">
         <div class="container">
             <div class="section-header fade-in">
@@ -1432,7 +1403,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
@@ -1479,24 +1449,20 @@
         </div>
     </footer>
 
-    <!-- WhatsApp Float -->
     <a href="https://wa.me/212771341173" class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- Scroll to Top -->
     <button class="scroll-top" id="scrollTop" onclick="scrollToTop()">
         <i class="fas fa-arrow-up"></i>
     </button>
 
     <script>
-        // ===== DATA =====
         const products = [
             {
                 id: 1,
                 name: { ar: "سرير طبي كهربائي", fr: "Lit médical électrique" },
                 desc: { ar: "سرير طبي كهربائي متعدد الوظائف مع جهاز تحكم عن بعد", fr: "Lit médical électrique multifonction avec télécommande" },
-                price: "3000",
                 category: "beds",
                 image: "https://kimi-web-img.moonshot.cn/img/www.capitalhme.ca/1fd4f5def16dd86d698d2cb30591887fdce7f592.jpg",
                 badge: "rent"
@@ -1505,7 +1471,6 @@
                 id: 2,
                 name: { ar: "كرسي متحرك", fr: "Fauteuil roulant" },
                 desc: { ar: "كرسي متحرك قياسي خفيف الوزن وقابل للطي", fr: "Fauteuil roulant standard léger et pliable" },
-                price: "1500",
                 category: "mobility",
                 image: "https://kimi-web-img.moonshot.cn/img/harmonyhomemedical.com/adcbf9c9e7ea2d0271727d5f1d53c43ed58afb4f.jpg",
                 badge: "rent"
@@ -1514,7 +1479,6 @@
                 id: 3,
                 name: { ar: "مكثف أكسجين", fr: "Concentrateur d'oxygène" },
                 desc: { ar: "مكثف أكسجين منزلي 5 لتر مع مرشحات عالية الجودة", fr: "Concentrateur d'oxygène domestique 5L avec filtres haute qualité" },
-                price: "4000",
                 category: "respiratory",
                 image: "https://kimi-web-img.moonshot.cn/img/img.lb.wbmdstatic.com/67bb6bfea5d1898f09844b06f1d5a47f9cfcc209.jpg",
                 badge: "rent"
@@ -1523,7 +1487,6 @@
                 id: 4,
                 name: { ar: "جهاز ضغط الدم", fr: "Tensiomètre" },
                 desc: { ar: "جهاز إلكتروني لقياس ضغط الدم مع شاشة رقمية", fr: "Tensiomètre électronique avec écran numérique" },
-                price: "800",
                 category: "monitoring",
                 image: "https://kimi-web-img.moonshot.cn/img/domf5oio6qrcr.cloudfront.net/99a68b9659d770fe295597935b1b2542fb24d6cc.jpg",
                 badge: "rent"
@@ -1532,7 +1495,6 @@
                 id: 5,
                 name: { ar: "بخاخة كهربائية", fr: "Nébuliseur électrique" },
                 desc: { ar: "بخاخة كهربائية فعالة لعلاج مشاكل التنفس", fr: "Nébuliseur électrique efficace pour les problèmes respiratoires" },
-                price: "1200",
                 category: "respiratory",
                 image: "https://kimi-web-img.moonshot.cn/img/img.medicalexpo.com/ddee1e45091e34a7917fda6df3cc8ff70f3222e8.jpg",
                 badge: "rent"
@@ -1541,7 +1503,6 @@
                 id: 6,
                 name: { ar: "ستاند محاليل", fr: "Porte-sérum" },
                 desc: { ar: "ستاند محاليل طبي متحرك بقاعدة ثقيلة وعجلات", fr: "Porte-sérum médical mobile avec base lourde et roues" },
-                price: "600",
                 category: "monitoring",
                 image: "https://kimi-web-img.moonshot.cn/img/www.medik-medical.com/81aefa31141766b4373d8cf3ca3cb09f27da6cbc.jpg",
                 badge: "rent"
@@ -1550,7 +1511,6 @@
                 id: 7,
                 name: { ar: "سرير طبي يدوي", fr: "Lit médical manuel" },
                 desc: { ar: "سرير طبي يدوي بظهر قابل للتعديل ودرابزين جانبي", fr: "Lit médical manuel avec dossier réglable et barrières latérales" },
-                price: "2000",
                 category: "beds",
                 image: "https://kimi-web-img.moonshot.cn/img/www.zorgers.com/5b13241d989ec9ba899bf2b917244786c41fe9fb.webp",
                 badge: "rent"
@@ -1559,7 +1519,6 @@
                 id: 8,
                 name: { ar: "ستاند محاليل متعدد", fr: "Porte-sérum multiple" },
                 desc: { ar: "ستاند محاليل متعدد الوظائف مع أجهزة ضخ متعددة", fr: "Porte-sérum multifonction avec plusieurs pompes" },
-                price: "2500",
                 category: "monitoring",
                 image: "https://kimi-web-img.moonshot.cn/img/sinomdt-global.com/451fcd60d73d08279f522e54cb49152579d9ff29.jpg",
                 badge: "rent"
@@ -1568,7 +1527,6 @@
                 id: 9,
                 name: { ar: "معدات طبية متنوعة", fr: "Équipements médicaux variés" },
                 desc: { ar: "مجموعة متنوعة من المعدات الطبية للكراء", fr: "Ensemble varié d'équipements médicaux à louer" },
-                price: "5000",
                 category: "beds",
                 image: "https://kimi-web-img.moonshot.cn/img/ardenhomehealthcare.co.in/3230b7f9b00407100beebf916e2ee92de8fb9e2a.jpg",
                 badge: "rent"
@@ -1577,7 +1535,6 @@
                 id: 10,
                 name: { ar: "معدات رعاية منزلية", fr: "Équipements de soins à domicile" },
                 desc: { ar: "مجموعة كاملة من المعدات للرعاية الصحية المنزلية", fr: "Ensemble complet d'équipements pour les soins à domicile" },
-                price: "8000",
                 category: "beds",
                 image: "https://kimi-web-img.moonshot.cn/img/cdnmedia.endeavorsuite.com/64e2b35c4bc889f3d848e207f9c72ab48ee9b5f0.png",
                 badge: "rent"
@@ -1586,7 +1543,6 @@
                 id: 11,
                 name: { ar: "سرير طبي كهربائي فاخر", fr: "Lit médical électrique luxe" },
                 desc: { ar: "سرير طبي فاخر مع مرتبة مريحة وتحكم كامل", fr: "Lit médical luxe avec matelas confortable et contrôle total" },
-                price: "5000",
                 category: "beds",
                 image: "https://kimi-web-img.moonshot.cn/img/www.capitalhme.ca/1fd4f5def16dd86d698d2cb30591887fdce7f592.jpg",
                 badge: "rent"
@@ -1595,7 +1551,6 @@
                 id: 12,
                 name: { ar: "كرسي متحرك كهربائي", fr: "Fauteuil roulant électrique" },
                 desc: { ar: "كرسي متحرك كهربائي ببطارية طويلة العمر", fr: "Fauteuil roulant électrique avec batterie longue durée" },
-                price: "3500",
                 category: "mobility",
                 image: "https://kimi-web-img.moonshot.cn/img/harmonyhomemedical.com/adcbf9c9e7ea2d0271727d5f1d53c43ed58afb4f.jpg",
                 badge: "rent"
@@ -1604,7 +1559,6 @@
                 id: 13,
                 name: { ar: "جهاز قياس السكر", fr: "Glucomètre" },
                 desc: { ar: "جهاز إلكتروني دقيق لقياس نسبة السكر في الدم", fr: "Appareil électronique précis pour mesurer la glycémie" },
-                price: "1000",
                 category: "monitoring",
                 image: "https://kimi-web-img.moonshot.cn/img/domf5oio6qrcr.cloudfront.net/99a68b9659d770fe295597935b1b2542fb24d6cc.jpg",
                 badge: "rent"
@@ -1613,7 +1567,6 @@
                 id: 14,
                 name: { ar: "جهاز بخاخة محمول", fr: "Nébuliseur portable" },
                 desc: { ar: "بخاخة صغيرة محمولة يمكن استخدامها في أي مكان", fr: "Nébuliseur compact portable utilisable partout" },
-                price: "1500",
                 category: "respiratory",
                 image: "https://kimi-web-img.moonshot.cn/img/img.medicalexpo.com/ddee1e45091e34a7917fda6df3cc8ff70f3222e8.jpg",
                 badge: "rent"
@@ -1622,7 +1575,6 @@
                 id: 15,
                 name: { ar: "سرير طبي للأطفال", fr: "Lit médical pédiatrique" },
                 desc: { ar: "سرير طبي مصمم خصيصاً للأطفال مع حماية جانبية", fr: "Lit médical conçu spécialement pour enfants avec protection latérale" },
-                price: "2500",
                 category: "beds",
                 image: "https://kimi-web-img.moonshot.cn/img/www.zorgers.com/5b13241d989ec9ba899bf2b917244786c41fe9fb.webp",
                 badge: "rent"
@@ -1631,7 +1583,6 @@
                 id: 16,
                 name: { ar: "مشاية طبية", fr: "Déambulateur médical" },
                 desc: { ar: "مشاية طبية قابلة للطي مع مقعد للراحة", fr: "Déambulateur médical pliable avec siège de repos" },
-                price: "1200",
                 category: "mobility",
                 image: "https://kimi-web-img.moonshot.cn/img/cdnmedia.endeavorsuite.com/64e2b35c4bc889f3d848e207f9c72ab48ee9b5f0.png",
                 badge: "rent"
@@ -1640,7 +1591,6 @@
                 id: 17,
                 name: { ar: "جهاز أكسجين محمول", fr: "Concentrateur d'oxygène portable" },
                 desc: { ar: "جهاز أكسجين صغير وخفيف للاستخدام أثناء التنقل", fr: "Concentrateur d'oxygène compact et léger pour déplacements" },
-                price: "3500",
                 category: "respiratory",
                 image: "https://kimi-web-img.moonshot.cn/img/img.lb.wbmdstatic.com/67bb6bfea5d1898f09844b06f1d5a47f9cfcc209.jpg",
                 badge: "rent"
@@ -1649,7 +1599,6 @@
                 id: 18,
                 name: { ar: "جهاز مراقبة القلب", fr: "Moniteur cardiaque" },
                 desc: { ar: "جهاز مراقبة القلب مع شاشة ملونة وتحذيرات", fr: "Moniteur cardiaque avec écran couleur et alertes" },
-                price: "4500",
                 category: "monitoring",
                 image: "https://kimi-web-img.moonshot.cn/img/sinomdt-global.com/451fcd60d73d08279f522e54cb49152579d9ff29.jpg",
                 badge: "rent"
@@ -1658,7 +1607,6 @@
                 id: 19,
                 name: { ar: "كرسي استحمام طبي", fr: "Chaise de bain médicale" },
                 desc: { ar: "كرسي استحمام طبي مقاوم للصدأ مع ظهر مريح", fr: "Chaise de bain médicale antirouille avec dossier confortable" },
-                price: "1800",
                 category: "mobility",
                 image: "https://kimi-web-img.moonshot.cn/img/harmonyhomemedical.com/adcbf9c9e7ea2d0271727d5f1d53c43ed58afb4f.jpg",
                 badge: "rent"
@@ -1667,14 +1615,12 @@
                 id: 20,
                 name: { ar: "جهاز تخطيط القلب", fr: "ECG portable" },
                 desc: { ar: "جهاز تخطيط القلب المحمول مع طباعة فورية", fr: "ECG portable avec impression immédiate" },
-                price: "6000",
                 category: "monitoring",
                 image: "https://kimi-web-img.moonshot.cn/img/ardenhomehealthcare.co.in/3230b7f9b00407100beebf916e2ee92de8fb9e2a.jpg",
                 badge: "rent"
             }
         ];
 
-        // ===== TRANSLATIONS =====
         const translations = {
             ar: {
                 home: "الرئيسية", products: "المعدات", about: "من نحن", contact: "اتصل بنا",
@@ -1689,8 +1635,7 @@
                 feat4Title: "أسعار تنافسية", feat4Desc: "أفضل الأسعار في السوق مع ضمان الجودة",
                 productsTitle: "معداتنا الطبية", productsDesc: "اختر من مجموعتنا الواسعة من المعدات الطبية المتوفرة للكراء",
                 filterAll: "الكل", filterBeds: "أسرة طبية", filterMobility: "تنقل", filterResp: "تنفس", filterMon: "مراقبة",
-                pricePeriod: "دج/شهر",
-                buyBtn: "كراء عبر واتساب",
+                buyBtn: "استفسر عن السعر عبر واتساب",
                 aboutTitle: "من نحن؟",
                 aboutDesc1: "نحن شركة متخصصة في كراء المعدات الطبية منذ أكثر من 10 سنوات. نسعى دائماً لتوفير أحدث المعدات الطبية بأعلى معايير الجودة والنظافة.",
                 aboutDesc2: "فريقنا يضم متخصصين في المجال الطبي والتقني لضمان حصولك على أفضل خدمة ممكنة. نؤمن بأن الرعاية الصحية حق للجميع.",
@@ -1714,7 +1659,8 @@
                 quickLinks: "روابط سريعة", services: "خدماتنا", legal: "قانوني",
                 service1: "كراء الأسرة الطبية", service2: "كراء معدات التنفس", service3: "كراء معدات التنقل", service4: "صيانة المعدات",
                 privacy: "سياسة الخصوصية", terms: "شروط الاستخدام", return: "سياسة الإرجاع",
-                rights: "جميع الحقوق محفوظة"
+                rights: "جميع الحقوق محفوظة",
+                contactPrompt: "للحصول على السعر، تواصل معنا عبر واتساب"
             },
             fr: {
                 home: "Accueil", products: "Équipements", about: "À propos", contact: "Contact",
@@ -1729,8 +1675,7 @@
                 feat4Title: "Prix compétitifs", feat4Desc: "Les meilleurs prix du marché avec garantie de qualité",
                 productsTitle: "Nos équipements médicaux", productsDesc: "Choisissez parmi notre large gamme d'équipements médicaux disponibles à la location",
                 filterAll: "Tous", filterBeds: "Lits médicaux", filterMobility: "Mobilité", filterResp: "Respiratoire", filterMon: "Surveillance",
-                pricePeriod: "DA/mois",
-                buyBtn: "Louer via WhatsApp",
+                buyBtn: "Demandez le prix via WhatsApp",
                 aboutTitle: "Qui sommes-nous ?",
                 aboutDesc1: "Nous sommes une entreprise spécialisée dans la location d'équipements médicaux depuis plus de 10 ans. Nous nous efforçons toujours de fournir les équipements médicaux les plus récents selon les normes les plus élevées de qualité et de propreté.",
                 aboutDesc2: "Notre équipe comprend des spécialistes dans les domaines médical et technique pour garantir que vous receviez le meilleur service possible. Nous croyons que les soins de santé sont un droit pour tous.",
@@ -1754,18 +1699,16 @@
                 quickLinks: "Liens rapides", services: "Nos services", legal: "Légal",
                 service1: "Location de lits médicaux", service2: "Location d'équipements respiratoires", service3: "Location d'équipements de mobilité", service4: "Maintenance des équipements",
                 privacy: "Politique de confidentialité", terms: "Conditions d'utilisation", return: "Politique de retour",
-                rights: "Tous droits réservés"
+                rights: "Tous droits réservés",
+                contactPrompt: "Pour connaître le prix, contactez-nous via WhatsApp"
             }
         };
 
         let currentLang = 'ar';
         let currentFilter = 'all';
 
-        // ===== SET LANGUAGE =====
         function setLang(lang) {
             currentLang = lang;
-            
-            // Update active state for language buttons
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if ((lang === 'ar' && btn.textContent.trim() === 'العربية') ||
@@ -1773,16 +1716,15 @@
                     btn.classList.add('active');
                 }
             });
-            
             updateLanguage();
         }
 
-        // ===== RENDER PRODUCTS =====
         function renderProducts(filter = 'all') {
             const grid = document.getElementById('productsGrid');
             if (!grid) return;
             
             const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+            const contactPrompt = translations[currentLang].contactPrompt || "للحصول على السعر، تواصل معنا عبر واتساب";
             
             grid.innerHTML = filtered.map(p => {
                 const name = p.name[currentLang] || p.name.ar;
@@ -1797,13 +1739,13 @@
                             <div class="product-category">${p.category}</div>
                             <h3 class="product-name">${name}</h3>
                             <p class="product-desc">${desc}</p>
-                            <div class="product-price">
-                                <span class="price">${p.price}</span>
-                                <span class="price-period" data-key="pricePeriod">دج/شهر</span>
+                            <div class="product-contact-prompt">
+                                <i class="fab fa-whatsapp"></i>
+                                <span>${contactPrompt}</span>
                             </div>
                             <div class="product-actions">
-                                <a href="https://wa.me/212771341173?text=${encodeURIComponent(currentLang === 'ar' ? `أرغب في كراء ${name} بسعر ${p.price} دج/شهر` : `Je souhaite louer ${name} au prix de ${p.price} DA/mois`)}" class="btn-buy" target="_blank">
-                                    <i class="fab fa-whatsapp"></i> <span data-key="buyBtn">كراء عبر واتساب</span>
+                                <a href="https://wa.me/212771341173?text=${encodeURIComponent(currentLang === 'ar' ? `أرغب في معرفة سعر كراء ${name}` : `Je souhaite connaître le prix de location de ${name}`)}" class="btn-buy" target="_blank">
+                                    <i class="fab fa-whatsapp"></i> <span data-key="buyBtn">استفسر عن السعر عبر واتساب</span>
                                 </a>
                                 <button class="btn-fav" onclick="handleFav(${p.id})">
                                     <i class="fas fa-heart"></i>
@@ -1814,10 +1756,7 @@
                 `;
             }).join('');
 
-            // Re-apply translations
             applyTranslations();
-            
-            // Trigger fade-in animation for new products
             setTimeout(() => {
                 document.querySelectorAll('.product-card.fade-in').forEach(el => {
                     el.classList.add('visible');
@@ -1825,7 +1764,6 @@
             }, 100);
         }
 
-        // ===== FILTER PRODUCTS =====
         function filterProducts(category, btn) {
             currentFilter = category;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -1833,63 +1771,25 @@
             renderProducts(category);
         }
 
-        // ===== HANDLE FAV =====
         function handleFav(id) {
             const btn = event.currentTarget;
             btn.classList.toggle('active');
         }
 
-        // ===== UPDATE LANGUAGE =====
         function updateLanguage() {
-            // Update all elements with data-key
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.dataset.key;
                 if (translations[currentLang] && translations[currentLang][key]) {
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
-                        if (el.placeholder && translations[currentLang][key]) {
-                            el.placeholder = translations[currentLang][key];
-                        }
-                    } else if (el.tagName === 'OPTION') {
+                    if (el.tagName === 'OPTION') {
                         el.textContent = translations[currentLang][key];
                     } else if (el.children.length === 0) {
                         el.textContent = translations[currentLang][key];
-                    } else {
-                        // For elements with children, update text nodes only if no child spans
-                        const textNodes = [];
-                        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
-                        let node;
-                        while (node = walker.nextNode()) {
-                            if (node.parentElement.closest('[data-key]') === el) {
-                                textNodes.push(node);
-                            }
-                        }
-                        if (textNodes.length === 1 && !textNodes[0].parentElement.querySelector('span, i, strong, b')) {
-                            textNodes[0].textContent = translations[currentLang][key];
-                        }
                     }
                 }
             });
-
-            // Update price period and buy button specifically
-            document.querySelectorAll('.price-period').forEach(el => {
-                const key = 'pricePeriod';
-                if (translations[currentLang] && translations[currentLang][key]) {
-                    el.textContent = translations[currentLang][key];
-                }
-            });
-            
-            document.querySelectorAll('.btn-buy span').forEach(el => {
-                const key = 'buyBtn';
-                if (translations[currentLang] && translations[currentLang][key]) {
-                    el.textContent = translations[currentLang][key];
-                }
-            });
-
-            // Re-render products to update names/descriptions
             renderProducts(currentFilter);
         }
 
-        // ===== APPLY TRANSLATIONS =====
         function applyTranslations() {
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.dataset.key;
@@ -1901,28 +1801,12 @@
                     }
                 }
             });
-            
-            document.querySelectorAll('.price-period').forEach(el => {
-                const key = 'pricePeriod';
-                if (translations[currentLang] && translations[currentLang][key]) {
-                    el.textContent = translations[currentLang][key];
-                }
-            });
-            
-            document.querySelectorAll('.btn-buy span').forEach(el => {
-                const key = 'buyBtn';
-                if (translations[currentLang] && translations[currentLang][key]) {
-                    el.textContent = translations[currentLang][key];
-                }
-            });
         }
 
-        // ===== SCROLL TO TOP =====
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ===== MOBILE MENU =====
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
             const mobileMenu = document.getElementById('mobileMenu');
@@ -1945,12 +1829,10 @@
                 mobileOverlay.addEventListener('click', toggleMobileMenu);
             }
 
-            // Close mobile menu on link click
             document.querySelectorAll('.mobile-nav-links a').forEach(link => {
                 link.addEventListener('click', toggleMobileMenu);
             });
 
-            // ===== SCROLL TO TOP VISIBILITY =====
             const scrollBtn = document.getElementById('scrollTop');
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 300) {
@@ -1960,7 +1842,6 @@
                 }
             });
 
-            // ===== FADE IN ON SCROLL =====
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -1973,12 +1854,10 @@
                 observer.observe(el);
             });
 
-            // ===== HIDE LOADER =====
             setTimeout(() => {
                 document.getElementById('loader').classList.add('hidden');
             }, 500);
 
-            // ===== INIT =====
             renderProducts('all');
             updateLanguage();
         });
