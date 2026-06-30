@@ -168,7 +168,7 @@
 
         .hero {
             margin-top: 70px;
-            min-height: 90vh;
+            min-height: 70vh;
             display: flex;
             align-items: center;
             background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0ea5e9 100%);
@@ -193,31 +193,27 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 1.5rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            text-align: center;
             position: relative;
             z-index: 1;
         }
 
-        .hero-text {
-            text-align: right;
-        }
-
-        /* Language buttons at the top of hero */
+        /* Language buttons at the very top of hero */
         .hero-lang-top {
             display: flex;
             gap: 0.5rem;
-            justify-content: flex-start;
-            margin-bottom: 1.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
         }
 
         .hero-lang-top .lang-btn {
             border-color: rgba(255,255,255,0.3);
             color: rgba(255,255,255,0.7);
-            padding: 0.5rem 1.2rem;
-            font-size: 0.95rem;
+            padding: 0.6rem 1.5rem;
+            font-size: 1rem;
         }
 
         .hero-lang-top .lang-btn.active {
@@ -248,13 +244,16 @@
             font-size: 1.2rem;
             color: rgba(255,255,255,0.8);
             margin-bottom: 2rem;
-            max-width: 500px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .hero-btns {
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .btn {
@@ -296,8 +295,9 @@
 
         .hero-stats {
             display: flex;
-            gap: 2rem;
+            gap: 3rem;
             margin-top: 3rem;
+            justify-content: center;
         }
 
         .stat {
@@ -313,21 +313,6 @@
         .stat-label {
             color: rgba(255,255,255,0.7);
             font-size: 0.9rem;
-        }
-
-        .hero-image {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero-image img {
-            width: 100%;
-            max-width: 600px;
-            border-radius: var(--radius);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            /* Removed animation: float to keep it centered */
         }
 
         .features {
@@ -560,6 +545,24 @@
         .btn-fav.active {
             color: var(--danger);
             border-color: var(--danger);
+        }
+
+        /* Featured product image banner */
+        .featured-product-banner {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto 3rem auto;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .featured-product-banner img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: cover;
+            display: block;
         }
 
         .about {
@@ -969,36 +972,15 @@
 
         @media (max-width: 1024px) {
             .hero-content {
-                grid-template-columns: 1fr;
                 text-align: center;
-            }
-
-            .hero-text {
-                text-align: center;
-            }
-
-            .hero-lang-top {
-                justify-content: center;
             }
 
             .hero-text p {
                 margin: 0 auto 2rem;
             }
 
-            .hero-btns {
-                justify-content: center;
-            }
-
             .hero-stats {
                 justify-content: center;
-            }
-
-            .hero-image {
-                order: -1;
-            }
-
-            .hero-image img {
-                max-width: 400px;
             }
 
             .about-grid, .contact-grid {
@@ -1021,10 +1003,6 @@
 
             .hero-text h1 {
                 font-size: 2.2rem;
-            }
-
-            .hero-image img {
-                max-width: 300px;
             }
 
             .section-header h2 {
@@ -1050,6 +1028,11 @@
 
             .features-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .hero-stats {
+                gap: 1.5rem;
+                flex-wrap: wrap;
             }
         }
 
@@ -1130,7 +1113,6 @@
             box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
         }
 
-        /* Product contact prompt instead of price */
         .product-contact-prompt {
             color: var(--gray);
             font-size: 0.95rem;
@@ -1180,6 +1162,7 @@
         </div>
     </nav>
 
+    <!-- Hero Section without image -->
     <section class="hero" id="home">
         <div class="hero-content">
             <div class="hero-text fade-in">
@@ -1209,9 +1192,6 @@
                         <div class="stat-label" data-key="statService">خدمة</div>
                     </div>
                 </div>
-            </div>
-            <div class="hero-image fade-in">
-                <img src="https://kimi-web-img.moonshot.cn/img/ardenhomehealthcare.co.in/3230b7f9b00407100beebf916e2ee92de8fb9e2a.jpg" alt="Medical Equipment">
             </div>
         </div>
     </section>
@@ -1252,6 +1232,11 @@
             <div class="section-header fade-in">
                 <h2 data-key="productsTitle">معداتنا الطبية</h2>
                 <p data-key="productsDesc">اختر من مجموعتنا الواسعة من المعدات الطبية المتوفرة للكراء</p>
+            </div>
+
+            <!-- Featured Image Banner -->
+            <div class="featured-product-banner fade-in">
+                <img src="https://kimi-web-img.moonshot.cn/img/ardenhomehealthcare.co.in/3230b7f9b00407100beebf916e2ee92de8fb9e2a.jpg" alt="معدات طبية - Medical Equipment">
             </div>
             
             <div class="products-filter fade-in">
